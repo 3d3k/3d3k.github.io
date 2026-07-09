@@ -672,8 +672,8 @@
         .image-viewer img {
             width: auto;
             height: auto;
-            max-width: 95vw;
-            max-height: 95vh;
+            max-width: 96vw;
+            max-height: 96vh;
             object-fit: contain;
             border-radius: 10px;
             box-shadow:0 0 50px rgba(0,0,0,.8);
@@ -743,13 +743,19 @@
 
         .qr-row {
             display: flex;
-            gap: 16px;
+            gap: 18px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .qr-row > div {
+            width: min(44%, 180px);
         }
 
         .qr-box {
-            flex: 1;
+            width: 100%;
             aspect-ratio: 1/1;
-            border-radius: 6px;
+            border-radius: 8px;
             border: 1px dashed var(--line);
             background: repeating-linear-gradient(45deg, #17160f 0 10px, #1b1a13 10px 20px);
             display: flex;
@@ -759,7 +765,15 @@
             color: var(--text-dim2);
             font-family: 'JetBrains Mono', monospace;
             font-size: 11px;
-            padding: 10px;
+            padding: 12px;
+            box-shadow: inset 0 0 0 1px rgba(255,255,255,.02);
+        }
+
+        .qr-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            border-radius: 6px;
         }
 
         .qr-label {
@@ -1075,7 +1089,7 @@
             </div>
             <div class="modal-body">
                 <h3>支持 3D3K</h3>
-                <p>你的每一分支持，都会用在服务器带宽、硬件和域名续费上。感谢你愿意为这片自由的世界出一份力。</p>
+                <p>你的每一分支持，都会用在服务器带宽、硬件和域名续费上。感谢你愿意为这片自由的世界出一份力。（点击放大图片）</p>
                 <div class="qr-row">
                     <div>
                         <div class="qr-box"><img src="/img/WeChat.png"></div>
