@@ -1,0 +1,1008 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3d3k——自由，即秩序！</title>
+    <link rel="preconnect" href="https://fonts.loli.net">
+    <link
+        href="https://fonts.loli.net/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0c0b09;
+            --bg-2: #131210;
+            --panel: #17160f;
+            --line: #2a2822;
+            --green: #9dff5c;
+            --green-dim: #5a8f34;
+            --green-glow: rgba(157, 255, 92, .35);
+            --amber: #ffb454;
+            --red: #ff5c5c;
+            --text: #eae7dc;
+            --text-dim: #8f8b7e;
+            --text-dim2: #5f5c52;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            margin: 0;
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+
+        ::selection {
+            background: var(--green);
+            color: #0c0b09;
+        }
+
+        .mono {
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* faint scanline / grain atmosphere */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 1;
+            background: repeating-linear-gradient(0deg, rgba(255, 255, 255, .012) 0 1px, transparent 1px 3px);
+            mix-blend-mode: overlay;
+        }
+
+        a {
+            color: inherit;
+        }
+
+        section {
+            scroll-margin-top: 70px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .fade-in {
+            opacity: 0;
+            filter: blur(6px);
+            transition: opacity .9s ease, filter .9s ease;
+        }
+
+        .fade-in.active {
+            opacity: 1;
+            filter: blur(0);
+        }
+
+        /* ---------- nav ---------- */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 50;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 32px;
+            background: rgba(12, 11, 9, .9);
+            border-bottom: 1px solid var(--line);
+        }
+
+        nav .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+            letter-spacing: .5px;
+        }
+
+        nav .brand img {
+            width: 22px;
+            height: 22px;
+            border-radius: 4px;
+        }
+
+        nav .brand .fallback {
+            width: 22px;
+            height: 22px;
+            border-radius: 4px;
+            background: var(--green-dim);
+            display: none;
+        }
+
+        nav .brand b {
+            color: var(--green);
+        }
+
+        nav ul {
+            display: flex;
+            gap: 0;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        nav ul li a {
+            font-size: 13px;
+            color: var(--text-dim);
+            text-decoration: none;
+            padding: 6px 14px;
+            border-left: 1px solid var(--line);
+        }
+
+        nav ul li:last-child a {
+            border-right: 1px solid var(--line);
+        }
+
+        nav ul li a:hover {
+            color: var(--green);
+        }
+
+        @media (max-width:760px) {
+            nav ul {
+                display: none;
+            }
+        }
+
+        /* ---------- hero ---------- */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            padding: 120px 32px 60px;
+            max-width: 1180px;
+            margin: 0 auto;
+            gap: 60px;
+        }
+
+        .hero-left {
+            flex: 1.1;
+            min-width: 0;
+        }
+
+        .hero-right {
+            flex: 1;
+            min-width: 340px;
+        }
+
+        @media (max-width:920px) {
+            .hero {
+                flex-direction: column;
+                padding-top: 130px;
+            }
+
+            .hero-right {
+                width: 100%;
+            }
+        }
+
+        .kicker {
+            font-size: 12px;
+            color: var(--green);
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .kicker .dot {
+            width: 6px;
+            height: 6px;
+            background: var(--green);
+            border-radius: 50%;
+            box-shadow: 0 0 8px var(--green-glow);
+            animation: blink 1.6s infinite;
+        }
+
+        @keyframes blink {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: .2;
+            }
+        }
+
+        .hero h1 {
+            font-size: clamp(36px, 6vw, 64px);
+            line-height: 1.15;
+            margin: 0 0 22px;
+            font-weight: 800;
+            letter-spacing: -1px;
+        }
+
+        .hero h1 em {
+            color: var(--green);
+            font-style: normal;
+        }
+
+        .hero p.lede {
+            font-size: 17px;
+            line-height: 1.8;
+            color: var(--text-dim);
+            max-width: 520px;
+            margin-bottom: 34px;
+        }
+
+        .cta-row {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .btn {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 14px;
+            font-weight: 600;
+            padding: 14px 24px;
+            border-radius: 3px;
+            text-decoration: none;
+            cursor: pointer;
+            border: 1px solid transparent;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-solid {
+            background: var(--green);
+            color: #0c0b09;
+        }
+
+        .btn-solid:hover {
+            background: #b8ff87;
+        }
+
+        .btn-ghost {
+            border-color: var(--line);
+            color: var(--text);
+            background: transparent;
+        }
+
+        .btn-ghost:hover {
+            border-color: var(--green);
+            color: var(--green);
+        }
+
+        .copy-status {
+            font-size: 13px;
+            color: var(--green);
+            margin-top: 14px;
+            height: 16px;
+            opacity: 0;
+            transition: opacity .3s ease;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* terminal window */
+        .term {
+            background: var(--panel);
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 30px 60px -20px rgba(0, 0, 0, .6);
+        }
+
+        .term-head {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 14px;
+            background: var(--bg-2);
+            border-bottom: 1px solid var(--line);
+        }
+
+        .term-head .dotc {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #3a3830;
+        }
+
+        .term-head span {
+            margin-left: auto;
+            font-size: 11px;
+            color: var(--text-dim2);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .term-body {
+            padding: 22px 20px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13.5px;
+            line-height: 1.9;
+            min-height: 210px;
+        }
+
+        .term-body .ln {
+            color: var(--text-dim);
+        }
+
+        .term-body .ln .prompt {
+            color: var(--green);
+        }
+
+        .term-body .ln .ok {
+            color: var(--green);
+        }
+
+        .term-body .ln .warn {
+            color: var(--amber);
+        }
+
+        #typed {
+            color: var(--text);
+            white-space: pre-wrap;
+        }
+
+        .cursor {
+            display: inline-block;
+            width: 8px;
+            height: 16px;
+            background: var(--green);
+            vertical-align: middle;
+            animation: blink 1s steps(1) infinite;
+        }
+
+        /* ---------- section shell ---------- */
+        .wrap {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 100px 32px;
+        }
+
+        .tag {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            color: var(--green);
+            letter-spacing: 2px;
+            margin-bottom: 16px;
+        }
+
+        h2 {
+            font-size: clamp(26px, 4vw, 38px);
+            font-weight: 800;
+            letter-spacing: -.5px;
+            margin: 0 0 20px;
+        }
+
+        p.body-text {
+            font-size: 16px;
+            line-height: 1.9;
+            color: var(--text-dim);
+            max-width: 640px;
+        }
+
+        /* manifest key:value box */
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1.3fr .8fr;
+            gap: 48px;
+            align-items: start;
+            margin-top: 20px;
+        }
+
+        @media (max-width:840px) {
+            .about-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .manifest {
+            background: var(--panel);
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .manifest .m-head {
+            padding: 10px 16px;
+            background: var(--bg-2);
+            border-bottom: 1px solid var(--line);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            color: var(--text-dim2);
+        }
+
+        .manifest .m-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 16px;
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--line);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+        }
+
+        .manifest .m-row:last-child {
+            border-bottom: none;
+        }
+
+        .manifest .m-row .k {
+            color: var(--text-dim2);
+        }
+
+        .manifest .m-row .v {
+            color: var(--green);
+            text-align: right;
+        }
+
+        /* diff rules */
+        .diff-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin-top: 36px;
+        }
+
+        @media (max-width:760px) {
+            .diff-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .diff {
+            background: var(--panel);
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .diff .d-head {
+            padding: 10px 16px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            border-bottom: 1px solid var(--line);
+        }
+
+        .diff.allow .d-head {
+            color: var(--green);
+            background: rgba(157, 255, 92, .06);
+        }
+
+        .diff.deny .d-head {
+            color: var(--red);
+            background: rgba(255, 92, 92, .06);
+        }
+
+        .diff .d-line {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            padding: 10px 16px;
+            border-bottom: 1px solid rgba(255, 255, 255, .03);
+        }
+
+        .diff.allow .d-line {
+            color: #c9f7a8;
+        }
+
+        .diff.deny .d-line {
+            color: #ffc2c2;
+        }
+
+        .diff .d-line b {
+            margin-right: 8px;
+            opacity: .6;
+        }
+
+        .note {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            color: var(--text-dim2);
+            margin-top: 20px;
+        }
+
+        /* git-log timeline */
+        .log {
+            margin-top: 36px;
+        }
+
+        .log-row {
+            display: flex;
+            gap: 20px;
+            padding: 18px 0;
+            border-bottom: 1px solid var(--line);
+        }
+
+        .log-row:last-child {
+            border-bottom: none;
+        }
+
+        .log-hash {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            color: var(--green-dim);
+            width: 70px;
+            flex-shrink: 0;
+            padding-top: 2px;
+        }
+
+        .log-main .log-date {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            color: var(--text-dim2);
+            margin-bottom: 4px;
+        }
+
+        .log-main h4 {
+            margin: 0 0 6px;
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        .log-main p {
+            margin: 0;
+            font-size: 14px;
+            color: var(--text-dim);
+            line-height: 1.7;
+        }
+
+        /* join */
+        .join-term {
+            max-width: 640px;
+            margin: 36px auto 0;
+        }
+
+        .center {
+            text-align: center;
+        }
+
+        footer {
+            text-align: center;
+            padding: 50px 24px 70px;
+            border-top: 1px solid var(--line);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            color: var(--text-dim2);
+        }
+
+        footer a {
+            color: var(--green);
+            text-decoration: none;
+        }
+
+        /* ---------- sponsor ---------- */
+        .sponsor-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 48px;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        @media (max-width:840px) {
+            .sponsor-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .sponsor-img {
+            width: 100%;
+            aspect-ratio: 4/3;
+            border-radius: 8px;
+            border: 1px dashed var(--line);
+            background: repeating-linear-gradient(45deg, #17160f 0 12px, #1b1a13 12px 24px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: var(--text-dim2);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            padding: 20px;
+        }
+
+        .sponsor-thanks {
+            margin-top: 22px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            color: var(--text-dim2);
+        }
+
+        .sponsor-thanks b {
+            color: var(--green);
+        }
+
+        /* modal */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(6, 5, 4, .8);
+            backdrop-filter: blur(3px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 200;
+            padding: 20px;
+        }
+
+        .modal-overlay.open {
+            display: flex;
+        }
+
+        .modal-box {
+            width: 100%;
+            max-width: 420px;
+            background: var(--panel);
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 40px 80px -20px rgba(0, 0, 0, .7);
+        }
+
+        .modal-box .term-head span.mt {
+            margin-left: 8px;
+        }
+
+        .modal-close {
+            margin-left: auto;
+            cursor: pointer;
+            color: var(--text-dim2);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 14px;
+            background: none;
+            border: none;
+            padding: 0 4px;
+        }
+
+        .modal-close:hover {
+            color: var(--red);
+        }
+
+        .modal-body {
+            padding: 22px 20px;
+        }
+
+        .modal-body h3 {
+            margin: 0 0 10px;
+            font-size: 18px;
+        }
+
+        .modal-body p {
+            font-size: 14px;
+            line-height: 1.8;
+            color: var(--text-dim);
+            margin: 0 0 18px;
+        }
+
+        .qr-row {
+            display: flex;
+            gap: 16px;
+        }
+
+        .qr-box {
+            flex: 1;
+            aspect-ratio: 1/1;
+            border-radius: 6px;
+            border: 1px dashed var(--line);
+            background: repeating-linear-gradient(45deg, #17160f 0 10px, #1b1a13 10px 20px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: var(--text-dim2);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            padding: 10px;
+        }
+
+        .qr-label {
+            text-align: center;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            color: var(--text-dim2);
+            margin-top: 8px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav>
+        <div class="brand mono">
+            <img src="https://3d3k.discourse.group/favicon.ico" alt="3D3K"
+                onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+            <div class="fallback"></div>
+            3d3k<b>@</b>world<b>:~$</b>
+        </div>
+        <ul class="mono">
+            <li><a href="#about">--about</a></li>
+            <li><a href="#rules">--rules</a></li>
+            <li><a href="#log">--log</a></li>
+            <li><a href="#sponsor">--sponsor</a></li>
+            <li><a href="#join">--join</a></li>
+        </ul>
+    </nav>
+
+    <!-- HERO -->
+    <div class="hero">
+        <div class="hero-left fade-in active">
+            <div class="kicker"><span class="dot"></span>SINCE 2025.06.04 · 无规则协议已启用</div>
+            <h1>自由，<em>即秩序。</em><br>没有边界，只有玩家。</h1>
+            <p class="lede">3D3K（原 2b2tCN）没有强制的管理约束，也没有繁琐的玩法限制。PVP、拆家、结盟、背叛——所有玩法都由你自己定义。</p>
+            <div class="cta-row">
+                <button class="btn btn-solid" onclick="copyIP('hero-status')">$ 复制服务器 IP</button>
+                <a class="btn btn-ghost" href="https://bbs.3d3k.org" target="_blank" rel="noopener">浏览论坛 ↗</a>
+            </div>
+            <div id="hero-status" class="copy-status">已复制 3d3k.org 到剪贴板</div>
+        </div>
+
+        <div class="hero-right fade-in active">
+            <div class="term">
+                <div class="term-head">
+                    <div class="dotc"></div>
+                    <div class="dotc"></div>
+                    <div class="dotc"></div>
+                    <span>connect.sh</span>
+                </div>
+                <div class="term-body">
+                    <div id="typed"></div><span class="cursor"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ABOUT -->
+    <section id="about" class="wrap">
+        <div class="tag fade-in"># about</div>
+        <h2 class="fade-in">这不是养老服，<br>是野蛮生长的自留地。</h2>
+        <div class="about-grid">
+            <div>
+                <p class="body-text fade-in">
+                    3D3K 前身为 2b2tCN，由腐竹 Zhouyi 独立维护。这里不追求秩序井然的和平——PVP 对抗、资源争夺、拆家偷袭、结盟争霸，全都是被默认允许的玩法，腐竹基本不干涉游戏内的正常对抗。
+                </p>
+                <p class="body-text fade-in" style="margin-top:16px;">
+                    域名 3d3k.org 由社区玩家 xuanfeng0316 赞助支持。从最初几个朋友的私服，到如今聚集了一批喜欢自由探索的玩家，服务器已经走过了自己的第一年。
+                </p>
+            </div>
+            <div class="manifest fade-in">
+                <div class="m-head">server.manifest</div>
+                <div class="m-row"><span class="k">status</span><span class="v">running</span></div>
+                <div class="m-row"><span class="k">ip</span><span class="v">3d3k.org</span></div>
+                <div class="m-row"><span class="k">type</span><span class="v">无规则生存</span></div>
+                <div class="m-row"><span class="k">edition</span><span class="v">Java</span></div>
+                <div class="m-row"><span class="k">launched</span><span class="v">2025-06-04</span></div>
+                <div class="m-row"><span class="k">predecessor</span><span class="v">2b2tCN</span></div>
+                <div class="m-row"><span class="k">forum</span><span class="v">bbs.3d3k.org</span></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- RULES -->
+    <section id="rules" class="wrap">
+        <div class="tag fade-in"># rules.diff</div>
+        <h2 class="fade-in">自由不代表无法无天。</h2>
+        <p class="body-text fade-in">游戏内的正常对抗随便打，但服务器本身的稳定运行，是唯一不可触碰的底线。</p>
+        <div class="diff-grid">
+            <div class="diff allow fade-in">
+                <div class="d-head">+ allowed.diff</div>
+                <div class="d-line"><b>+</b>PVP 对抗、偷袭、埋伏</div>
+                <div class="d-line"><b>+</b>抢夺资源、拆家、破坏建筑</div>
+                <div class="d-line"><b>+</b>设置陷阱，恶意整活</div>
+                <div class="d-line"><b>+</b>结盟争霸，自由社交</div>
+                <div class="d-line"><b>+</b>肝矿建筑，随性而为</div>
+                <div class="d-line"><b>+</b>利用漏洞刷物品 / dupe</div>
+                <div class="d-line"><b>+</b>外挂、透视、飞行、秒杀、自动挖矿</div>
+                <div class="d-line"><b>+</b>恶意破坏、盗号、骗装备</div>
+            </div>
+            <div class="diff deny fade-in">
+                <div class="d-head">− banned.diff</div>
+                <div class="d-line"><b>−</b>攻击服务器 / 致其崩溃</div>
+            </div>
+        </div>
+        <div class="note">$ banlist --查询封禁记录已公开上线</div>
+    </section>
+
+    <!-- LOG / TIMELINE -->
+    <section id="log" class="wrap">
+        <div class="tag fade-in"># git log --oneline</div>
+        <h2 class="fade-in">服务器提交记录</h2>
+        <div class="log">
+            <div class="log-row fade-in">
+                <div class="log-hash">#0001</div>
+                <div class="log-main">
+                    <div class="log-date">2025-06-04</div>
+                    <h4>init: 正式开服</h4>
+                    <p>3D3K 无规则服（原 2b2tCN）正式上线，地址 3d3k.org，域名由玩家 xuanfeng0316 赞助支持。</p>
+                </div>
+            </div>
+            <div class="log-row fade-in">
+                <div class="log-hash">#0002</div>
+                <div class="log-main">
+                    <div class="log-date">运营期间</div>
+                    <h4>feat: banlist 查询系统上线</h4>
+                    <p>玩家可自行查询封禁记录，规则执行更加透明。</p>
+                </div>
+            </div>
+            <div class="log-row fade-in">
+                <div class="log-hash">#0003</div>
+                <div class="log-main">
+                    <div class="log-date">运营期间</div>
+                    <h4>remove: 关闭快捷传送</h4>
+                    <p>下线 TPA、随机传送等功能，鼓励真实的探索与迁徙。</p>
+                </div>
+            </div>
+            <div class="log-row fade-in">
+                <div class="log-hash">#0004</div>
+                <div class="log-main">
+                    <div class="log-date">运营期间</div>
+                    <h4>perf: 服务器配置升级</h4>
+                    <p>针对卡顿反馈进行硬件与配置升级，提升游玩体验。</p>
+                </div>
+            </div>
+            <div class="log-row fade-in">
+                <div class="log-hash">#0005</div>
+                <div class="log-main">
+                    <div class="log-date">2026-06-06</div>
+                    <h4>release: 一周年庆典</h4>
+                    <p>从孤身一人到三五成群——3D3K 一周年庆典开启，全天开放，赠送限定纪念物品。</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SPONSOR -->
+    <section id="sponsor" class="wrap">
+        <div class="tag fade-in"># sponsor</div>
+        <h2 class="fade-in">我们需要你的帮助。</h2>
+        <div class="sponsor-grid">
+            <div>
+                <p class="body-text fade-in">
+                    服务器、域名和日常维护都需要持续的投入。3D3K 能走到今天，离不开玩家们——如果你也喜欢这片自由的世界，希望它能一直运行下去，欢迎支持我们。
+                </p>
+                <button class="btn btn-solid fade-in" onclick="openSponsorModal()">$ 支持我们</button>
+                <div class="sponsor-thanks fade-in"># 特别鸣谢</div>
+                <div class="sponsor-thanks fade-in"># <b>xuanfeng0316</b>（域名赞助）</div>
+                <div class="sponsor-thanks fade-in"># <b>MinecraftCurious</b></div>
+                <div class="sponsor-thanks fade-in"># <b>zyssgzzyssgz</b></div>
+                <div class="sponsor-thanks fade-in"># <b>111</b></div>
+                <div class="sponsor-thanks fade-in"># <b>3333</b></div>
+                <div class="sponsor-thanks fade-in"># <b>knepts</b></div>
+                <div class="sponsor-thanks fade-in"># <b>Yeye</b></div>
+                <div class="sponsor-thanks fade-in"># <b>fruit0v0</b></div>
+            </div>
+            <div class="sponsor-img fade-in">
+                <img src="img/World.jpg">
+            </div>
+        </div>
+    </section>
+
+    <!-- JOIN -->
+    <section id="join" class="wrap center">
+        <div class="tag fade-in" style="justify-content:center;display:flex;"># join</div>
+        <h2 class="fade-in">现在，连接进去。</h2>
+        <p class="body-text fade-in" style="margin:0 auto;">打开 Minecraft Java 版，添加服务器，剩下的故事由你自己书写。</p>
+
+        <div class="term join-term fade-in">
+            <div class="term-head">
+                <div class="dotc"></div>
+                <div class="dotc"></div>
+                <div class="dotc"></div>
+                <span>join.sh</span>
+            </div>
+            <div class="term-body" style="text-align:left;">
+                <div class="ln"><span class="prompt">$</span> minecraft-launcher connect <span
+                        class="ok">3d3k.org</span></div>
+                <div class="ln" style="margin-top:8px;">
+                    <button class="btn btn-solid" onclick="copyIP('join-status')" style="margin-top:6px;">$ 复制
+                        IP</button>
+                    <a class="btn btn-ghost" href="https://bbs.3d3k.org" target="_blank" rel="noopener"
+                        style="margin-top:6px; margin-left:10px;">论坛 ↗</a>
+                </div>
+            </div>
+        </div>
+        <div id="join-status" class="copy-status" style="text-align:center;">已复制 3d3k.org 到剪贴板</div>
+    </section>
+
+    <footer>
+        3D3K · 原 2b2tCN &copy; 2025-2026
+    </footer>
+
+    <script>
+        function openSponsorModal() {
+            document.getElementById('sponsorModal').classList.add('open');
+            document.body.style.overflow = 'hidden';
+        }
+        function closeSponsorModal() {
+            document.getElementById('sponsorModal').classList.remove('open');
+            document.body.style.overflow = '';
+        }
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeSponsorModal();
+        });
+
+        function copyIP(id) {
+            navigator.clipboard.writeText('3d3k.org').then(() => {
+                const el = document.getElementById(id);
+                if (el) {
+                    el.style.opacity = '1';
+                    clearTimeout(el._t);
+                    el._t = setTimeout(() => el.style.opacity = '0', 2200);
+                }
+            });
+        }
+
+        // scroll reveal
+        const io = new IntersectionObserver((entries) => {
+            entries.forEach(e => {
+                if (e.isIntersecting) { e.target.classList.add('active'); io.unobserve(e.target); }
+            });
+        }, { threshold: .15 });
+        document.querySelectorAll('.fade-in').forEach(el => io.observe(el));
+
+        // typewriter terminal
+        const lines = [
+
+            { text: '$ minecraft-launcher connect 3d3k.org', cls: 'warn' },
+            { text: '> connecting to 3d3k.org ...', cls: '' },
+            { text: '> handshake ok', cls: 'ok' },
+            { text: '> 无规则协议已启用', cls: 'ok' },
+            { text: '> TPA / 随机传送: disabled', cls: '' },
+            { text: '> banlist: public', cls: '' },
+            { text: '$ 欢迎，玩家。世界不会等你。_', cls: '' },
+        ];
+        const typedEl = document.getElementById('typed');
+        let li = 0, ci = 0;
+        function typeLoop() {
+            if (li >= lines.length) {
+                setTimeout(() => { typedEl.innerHTML = ''; li = 0; ci = 0; typeLoop(); }, 2600);
+                return;
+            }
+            const current = lines[li];
+            if (ci === 0) {
+                typedEl.innerHTML += (li > 0 ? '\n' : '') + `<span class="${current.cls}">`;
+            }
+            if (ci < current.text.length) {
+                typedEl.querySelector('span:last-child').textContent += current.text[ci];
+                ci++;
+                setTimeout(typeLoop, 26);
+            } else {
+                li++; ci = 0;
+                setTimeout(typeLoop, 380);
+            }
+        }
+        typeLoop();
+    </script>
+    <div class="modal-overlay" id="sponsorModal" onclick="if(event.target===this) closeSponsorModal()">
+        <div class="modal-box">
+            <div class="term-head">
+                <div class="dotc"></div>
+                <div class="dotc"></div>
+                <div class="dotc"></div>
+                <span class="mt">sponsor.sh</span>
+                <button class="modal-close" onclick="closeSponsorModal()">[x] close</button>
+            </div>
+            <div class="modal-body">
+                <h3>支持 3D3K</h3>
+                <p>你的每一分支持，都会用在服务器带宽、硬件和域名续费上。感谢你愿意为这片自由的世界出一份力。</p>
+                <div class="qr-row">
+                    <div>
+                        <div class="qr-box"><img src="/img/WeChat.png"></div>
+                        <div class="qr-label">微信</div>
+                    </div>
+                    <div>
+                        <div class="qr-box"><img src="/img/AliPay.png">></div>
+                        <div class="qr-label">支付宝</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>
