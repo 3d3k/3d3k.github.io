@@ -616,7 +616,7 @@ addEventListener('mouseup',()=>{if(down){down=false;irt=base()}});
     if(scrollY>20)return;
     intro.classList.add('leave');
     setTimeout(()=>{if(scrollY<window.innerHeight*.5)$('#hero').scrollIntoView({behavior:'smooth'})},900);
-  },5600);
+  },2800);
   addEventListener('scroll',()=>{if(scrollY>20)clearTimeout(t)},{passive:true});
   new IntersectionObserver(es=>es.forEach(e=>{
     if(e.isIntersecting&&intro.classList.contains('leave'))intro.classList.remove('leave');
