@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>3d3k - 自由，即秩序！</title>
+<title>3d3k——自由，即秩序！</title>
 <link rel="preconnect" href="https://fonts.loli.net">
 <link href="https://fonts.loli.net/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
@@ -11,12 +11,12 @@ img{width:100%;height:100%;object-fit:cover;display:block}
 .qr-box img{object-fit:contain}
 :root{--bg:#0b0805;--bg-2:#11100d;--panel:rgba(23,22,15,.72);--line:#2a2822;--accent:#ffab1e;--accent-dim:#9a5a12;--glow:rgba(255,170,30,.35);--amber:#ff6b2b;--red:#ff5c5c;--text:#eae7dc;--dim:#8f8b7e;--dim2:#5f5c52}
 *{box-sizing:border-box}
-html{scroll-behavior:smooth}
+html{scroll-behavior:smooth;scroll-snap-type:y mandatory}
 body{margin:0;background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;overflow-x:hidden}
 ::selection{background:var(--accent);color:#0a0908}
 .mono{font-family:'JetBrains Mono',monospace}
 a{color:inherit}
-section{scroll-margin-top:70px;position:relative;z-index:2}
+section{scroll-margin-top:0;position:relative;z-index:2;scroll-snap-align:start;scroll-snap-stop:always}
 #bg{position:fixed;inset:0;z-index:0;pointer-events:none}
 body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:1;background:repeating-linear-gradient(0deg,rgba(255,255,255,.014) 0 1px,transparent 1px 3px)}
 body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:1;background:radial-gradient(ellipse at center,transparent 50%,rgba(0,0,0,.65))}
@@ -54,7 +54,8 @@ nav ul li a:hover::after,nav ul li a.on::after{transform:scaleX(1)}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
 .hero h1{font-size:clamp(36px,6vw,64px);line-height:1.15;margin:0 0 22px;font-weight:800;letter-spacing:-1px}
 .hero h1 .ln{display:block;overflow:hidden}
-.hero h1 .ln>span{display:block;transform:translateY(110%);animation:rise 1s cubic-bezier(.2,.8,.2,1) forwards}
+.hero h1 .ln>span{display:block;transform:translateY(110%);animation:rise 1s cubic-bezier(.2,.8,.2,1) forwards;animation-play-state:paused}
+.hero.in h1 .ln>span{animation-play-state:running}
 .hero h1 .ln:nth-child(2)>span{animation-delay:.18s}
 @keyframes rise{to{transform:none}}
 .hero h1 em{font-style:normal;color:var(--accent);position:relative;text-shadow:0 0 30px var(--glow);display:inline-block}
@@ -106,7 +107,7 @@ nav ul li a:hover::after,nav ul li a.on::after{transform:scaleX(1)}
 .cursor{display:inline-block;width:8px;height:16px;background:var(--accent);vertical-align:middle;animation:blink 1s steps(1) infinite;box-shadow:0 0 8px var(--accent)}
 
 /* sections */
-.wrap{max-width:1000px;margin:0 auto;padding:100px 32px}
+.wrap{max-width:1000px;margin:0 auto;padding:96px 32px 48px;min-height:100vh;display:flex;flex-direction:column;justify-content:center}
 .tag{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--accent);letter-spacing:2px;margin-bottom:16px;min-height:18px}
 h2{font-size:clamp(26px,4vw,38px);font-weight:800;letter-spacing:-.5px;margin:0 0 20px;background:linear-gradient(100deg,var(--text) 35%,#ffcf5e 50%,#ff7a2a 60%,var(--text) 75%);background-size:250% 100%;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;animation:sheen 7s linear infinite}
 @keyframes sheen{to{background-position:-250% 0}}
@@ -144,7 +145,7 @@ p.body-text{font-size:16px;line-height:1.9;color:var(--dim);max-width:640px}
 /* timeline */
 .log{margin-top:36px;position:relative;padding-left:34px}
 .log::before{content:'';position:absolute;left:7px;top:6px;bottom:6px;width:2px;background:var(--line)}
-.log-line{position:absolute;left:7px;top:6px;width:2px;height:0;background:linear-gradient(var(--accent-dim),var(--accent));box-shadow:0 0 10px var(--accent)}
+.log-line{transition:height .5s ease-out;position:absolute;left:7px;top:6px;width:2px;height:0;background:linear-gradient(var(--accent-dim),var(--accent));box-shadow:0 0 10px var(--accent)}
 .log-row{position:relative;display:flex;gap:20px;padding:18px 16px;margin-left:-16px;border-radius:8px;border-bottom:1px solid transparent;transition:background .3s}
 .log-row:hover{background:rgba(255,170,30,.04)}
 .log-row::before{content:'';position:absolute;left:-23px;top:24px;width:10px;height:10px;border-radius:50%;background:var(--bg);border:2px solid var(--accent-dim);transition:all .4s}
@@ -163,14 +164,14 @@ p.body-text{font-size:16px;line-height:1.9;color:var(--dim);max-width:640px}
 .sponsor-img:hover::after{opacity:1;transform:none}
 .sponsor-img img{transition:transform .6s cubic-bezier(.2,.7,.2,1)}
 .sponsor-img:hover img{transform:scale(1.07)}
-.sponsor-thanks{margin-top:10px;font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--dim2);transition:transform .25s,color .25s}
+.sponsor-thanks{margin-top:5px;font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--dim2);transition:transform .25s,color .25s}
 .sponsor-thanks:hover{transform:translateX(8px);color:var(--dim)}
 .sponsor-thanks b{color:var(--accent)}
 .sponsor-grid .btn{margin:6px 0 18px}
 
 .join-term{max-width:640px;margin:36px auto 0}
 .center{text-align:center}
-footer{position:relative;z-index:2;text-align:center;padding:50px 24px 70px;border-top:1px solid var(--line);font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--dim2)}
+footer{position:relative;z-index:2;scroll-snap-align:end;text-align:center;padding:28px 24px 36px;border-top:1px solid var(--line);font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--dim2)}
 footer a{color:var(--accent);text-decoration:none}
 
 /* viewer + modal */
@@ -196,6 +197,37 @@ footer a{color:var(--accent);text-decoration:none}
 .qr-box img{border-radius:6px}
 .qr-label{text-align:center;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--dim2);margin-top:8px}
 
+/* intro */
+.intro{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;overflow:hidden}
+.intro::before{content:'';position:absolute;inset:0;background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);background-size:60px 60px;opacity:.3;-webkit-mask-image:radial-gradient(circle at center,#000,transparent 70%);mask-image:radial-gradient(circle at center,#000,transparent 70%);animation:grid 20s linear infinite}
+@keyframes grid{to{background-position:60px 60px}}
+.intro-in{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;pointer-events:none}
+.intro .kicker{justify-content:center}
+.big{display:flex;font-weight:800;font-size:clamp(90px,27vw,340px);line-height:1;letter-spacing:-.04em;color:rgba(255,170,30,.07);-webkit-text-stroke:2px var(--accent);filter:drop-shadow(0 0 28px rgba(255,170,30,.35))}
+.big span{display:inline-block;opacity:0;transform:translateY(120%) rotateX(-80deg);animation:letter 1.1s cubic-bezier(.2,.9,.2,1) forwards,bob 4s ease-in-out infinite;animation-delay:calc(var(--k)*.13s + .2s),calc(var(--k)*.35s + 1.6s)}
+@keyframes letter{to{opacity:1;transform:none}}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+.sub{font-size:clamp(16px,2.4vw,26px);letter-spacing:.5em;margin:6px 0 0 .5em;color:var(--dim)}
+.tip{font-size:12px;color:var(--dim2);margin-top:26px;letter-spacing:2px}
+.scroll-hint{position:absolute;bottom:26px;left:50%;transform:translateX(-50%);font-size:12px;color:var(--dim2);letter-spacing:3px;animation:hint 2s ease-in-out infinite;z-index:2}
+@keyframes hint{50%{transform:translate(-50%,8px)}}
+.inv{position:absolute;inset:0;z-index:3;background:var(--accent);display:flex;flex-direction:column;align-items:center;justify-content:center;clip-path:circle(0px at 50% 50%);pointer-events:none}
+.inv .big{color:#0b0805;-webkit-text-stroke:0;filter:none}
+.inv .kicker,.inv .sub,.inv .tip{color:#0b0805}
+.inv .kicker .dot{background:#0b0805;box-shadow:none}.inv .kicker .dot::after{border-color:#0b0805}
+
+/* cursor / dots / page counter */
+#cur{position:fixed;left:0;top:0;width:28px;height:28px;margin:-14px 0 0 -14px;border-radius:50%;background:#fff;mix-blend-mode:difference;pointer-events:none;z-index:10000;transition:width .3s,height .3s,margin .3s;will-change:transform}
+#cur.big2{width:84px;height:84px;margin:-42px 0 0 -42px}
+@media(pointer:fine){*{cursor:none!important}}
+#dots{position:fixed;right:18px;top:50%;transform:translateY(-50%);z-index:60;display:flex;flex-direction:column;gap:14px}
+#dots button{position:relative;width:10px;height:10px;border-radius:50%;border:1px solid var(--dim2);background:transparent;padding:0;transition:all .3s}
+#dots button.on{background:var(--accent);border-color:var(--accent);box-shadow:0 0 10px var(--accent);transform:scale(1.4)}
+#dots button::after{content:attr(data-l);position:absolute;right:20px;top:50%;transform:translateY(-50%) translateX(6px);font:11px 'JetBrains Mono',monospace;color:var(--accent);opacity:0;white-space:nowrap;transition:.25s;pointer-events:none}
+#dots button:hover::after{opacity:1;transform:translateY(-50%)}
+#pg{position:fixed;left:32px;bottom:24px;z-index:60;font:12px 'JetBrains Mono',monospace;color:var(--dim2);letter-spacing:2px}
+@media(max-width:760px){#dots{right:8px}#pg{left:14px}}
+@media(max-width:920px){html{scroll-snap-type:y proximity}}
 @media(pointer:coarse){#glow{display:none}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}.fade-in,.d-line{opacity:1!important;filter:none!important;transform:none!important}.hero h1 .ln>span{transform:none}}
 </style>
@@ -220,19 +252,30 @@ footer a{color:var(--accent);text-decoration:none}
   </ul>
 </nav>
 
+<!-- INTRO -->
+<section id="intro" class="intro" data-page="3D3K">
+  <div class="intro-in">
+    <div class="kicker mono"><span class="dot"></span>SINCE 2025.06.04</div>
+    <div class="big" aria-label="3D3K"><span style="--k:0">3</span><span style="--k:1">D</span><span style="--k:2">3</span><span style="--k:3">K</span></div>
+    <div class="sub">自由，即秩序。</div>
+    <div class="tip mono">// 移动鼠标 · 按住鼠标</div>
+  </div>
+  <div class="scroll-hint mono">SCROLL ↓</div>
+</section>
+
 <!-- HERO -->
-<div class="hero">
+<section class="hero" id="hero" data-page="首页">
   <div class="hero-left">
     <div class="kicker mono"><span class="dot"></span>SINCE 2025.06.04 · 3d3k.org</div>
     <h1><span class="ln"><span>自由，<em data-t="即秩序。">即秩序。</em></span></span><span class="ln"><span>没有边界，只有玩家。</span></span></h1>
-    <p class="lede fade-in active" style="--i:5;transition-delay:.5s">3D3K（原 2b2tCN）没有强制的管理约束，也没有繁琐的玩法限制。PVP、拆家、结盟、背叛——所有玩法都由你自己定义。</p>
-    <div class="cta-row fade-in active" style="--i:7">
+    <p class="lede fade-in" style="--i:5;transition-delay:.5s">3D3K（原 2b2tCN）没有强制的管理约束，也没有繁琐的玩法限制。PVP、拆家、结盟、背叛——所有玩法都由你自己定义。</p>
+    <div class="cta-row fade-in" style="--i:7">
       <button class="btn btn-solid magnet" onclick="copyIP('hero-status')">$ 复制服务器 IP</button>
       <a class="btn btn-ghost magnet" href="https://bbs.3d3k.org" target="_blank" rel="noopener">浏览论坛 ↗</a>
     </div>
     <div id="hero-status" class="copy-status">已复制服务器IP 3d3k.org 到剪贴板</div>
   </div>
-  <div class="hero-right fade-in active" style="--i:4">
+  <div class="hero-right fade-in" style="--i:4">
     <div class="cube"><i></i><i></i><i></i><i></i><i></i><i></i></div>
     <div class="cube"><i></i><i></i><i></i><i></i><i></i><i></i></div>
     <div class="cube"><i></i><i></i><i></i><i></i><i></i><i></i></div>
@@ -241,10 +284,10 @@ footer a{color:var(--accent);text-decoration:none}
       <div class="term-body"><span id="typed"></span><span class="cursor"></span></div>
     </div>
   </div>
-</div>
+</section>
 
 <!-- ABOUT -->
-<section id="about" class="wrap">
+<section data-page="关于" id="about" class="wrap">
   <div class="tag scramble fade-in"># about</div>
   <h2 class="fade-in" style="--i:1">这不是养老服，<br>是野蛮生长的自留地。</h2>
   <div class="about-grid">
@@ -267,7 +310,7 @@ footer a{color:var(--accent);text-decoration:none}
 </section>
 
 <!-- RULES -->
-<section id="rules" class="wrap">
+<section data-page="规则" id="rules" class="wrap">
   <div class="tag scramble fade-in"># rules.diff</div>
   <h2 class="fade-in" style="--i:1">自由不代表无法无天。</h2>
   <p class="body-text fade-in" style="--i:2">游戏内的正常对抗随便打，但服务器本身的稳定运行，是唯一不可触碰的底线。</p>
@@ -294,7 +337,7 @@ footer a{color:var(--accent);text-decoration:none}
 </section>
 
 <!-- LOG -->
-<section id="log" class="wrap">
+<section data-page="日志" id="log" class="wrap">
   <div class="tag scramble fade-in"># git log --oneline</div>
   <h2 class="fade-in" style="--i:1">服务器提交记录</h2>
   <div class="log" id="logBox">
@@ -308,7 +351,7 @@ footer a{color:var(--accent);text-decoration:none}
 </section>
 
 <!-- SPONSOR -->
-<section id="sponsor" class="wrap">
+<section data-page="赞助" id="sponsor" class="wrap">
   <div class="tag scramble fade-in"># sponsor</div>
   <h2 class="fade-in" style="--i:1">我们需要你的帮助。</h2>
   <div class="sponsor-grid">
@@ -332,7 +375,7 @@ footer a{color:var(--accent);text-decoration:none}
 </section>
 
 <!-- JOIN -->
-<section id="join" class="wrap center">
+<section data-page="加入" id="join" class="wrap center">
   <div class="tag scramble fade-in" style="justify-content:center;display:flex;"># join</div>
   <h2 class="fade-in" style="--i:1">现在，连接进去。</h2>
   <p class="body-text fade-in" style="margin:0 auto;--i:2">打开 Minecraft Java 版，添加服务器，剩下的故事由你自己书写。</p>
@@ -407,7 +450,7 @@ const secs=[...$$('section[id]')],links=[...$$('nav ul a')];
 function onScroll(){
   const h=document.documentElement,max=h.scrollHeight-innerHeight;
   $('#progress').style.width=(scrollY/max*100)+'%';
-  const b=$('#logBox').getBoundingClientRect(),p=Math.min(Math.max((innerHeight*.65-b.top)/b.height,0),1);
+  const b=$('#logBox').getBoundingClientRect(),p=Math.min(Math.max((innerHeight*.95-b.top)/b.height,0),1);
   $('#logLine').style.height=(p*(b.height-12))+'px';
   let cur='';secs.forEach(s=>{if(s.getBoundingClientRect().top<innerHeight*.4)cur=s.id});
   links.forEach(a=>a.classList.toggle('on',a.getAttribute('href')==='#'+cur));
@@ -435,7 +478,7 @@ const lines=[
   {t:'> connecting to 3d3k.org ...',c:''},
   {t:'> handshake ok',c:'ok'},
   {t:'> 无规则协议已启用',c:'ok'},
-  {t:'> TPA: re-enabled',c:''},
+  {t:'> TPA / 随机传送: disabled',c:''},
   {t:'> banlist: public',c:''},
   {t:'$ 欢迎，玩家。世界不会等你。_',c:'ok'}];
 const typed=$('#typed');let li=0,ci=0,cur;
@@ -466,6 +509,33 @@ addEventListener('resize',size);size();
   }
   if(!reduce)requestAnimationFrame(draw);
 })();
+/* pages: dots, counter, in-view */
+const pages=[...$$('[data-page]')],dots=document.createElement('div'),pg=document.createElement('div');
+dots.id='dots';pg.id='pg';
+pages.forEach(p=>{const b=document.createElement('button');b.dataset.l=p.dataset.page;b.setAttribute('aria-label',p.dataset.page);b.onclick=()=>p.scrollIntoView({behavior:'smooth'});dots.append(b)});
+document.body.append(dots,pg);
+function pageUpdate(){let k=0,best=1e9;pages.forEach((p,i)=>{const r=p.getBoundingClientRect(),d=Math.abs(r.top+r.height/2-innerHeight/2);if(d<best){best=d;k=i}});
+  [...dots.children].forEach((b,i)=>b.classList.toggle('on',i===k));pg.textContent=String(k+1).padStart(2,'0')+' / '+String(pages.length).padStart(2,'0')}
+addEventListener('scroll',pageUpdate,{passive:true});pageUpdate();
+const pio=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('in')}),{threshold:.4});
+pages.forEach(p=>pio.observe(p));
+
+/* intro: invert-reveal circle following the mouse */
+const intro=$('#intro'),inv=document.createElement('div');
+inv.className='inv';inv.setAttribute('aria-hidden','true');inv.append($('.intro-in').cloneNode(true));intro.append(inv);
+let ir=0,irt=0,ix=0,iy=0;const base=()=>Math.max(150,Math.min(innerWidth,innerHeight)*.22);
+intro.addEventListener('mousemove',e=>{const b=intro.getBoundingClientRect();ix=e.clientX-b.left;iy=e.clientY-b.top;if(!down)irt=base()});
+intro.addEventListener('mouseleave',()=>irt=0);
+let down=false;
+intro.addEventListener('mousedown',()=>{down=true;irt=Math.hypot(innerWidth,innerHeight)});
+addEventListener('mouseup',()=>{if(down){down=false;irt=base()}});
+(function il(){ir+=(irt-ir)*.1;inv.style.clipPath=`circle(${ir.toFixed(1)}px at ${ix}px ${iy}px)`;requestAnimationFrame(il)})();
+
+/* global invert (difference) cursor */
+const cur=document.createElement('div');cur.id='cur';document.body.append(cur);
+let ux=mx,uy=my;
+(function cl(){ux+=(mx-ux)*.25;uy+=(my-uy)*.25;cur.style.transform=`translate(${ux}px,${uy}px)`;requestAnimationFrame(cl)})();
+document.addEventListener('mouseover',e=>cur.classList.toggle('big2',!!e.target.closest('a,button,.btn,h2,.intro,.sponsor-img,.qr-box,.sponsor-thanks,.log-row,.d-line')));
 </script>
 </body>
 </html>
