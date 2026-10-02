@@ -532,10 +532,10 @@ addEventListener('mouseup',()=>{if(down){down=false;irt=base()}});
 (function il(){ir+=(irt-ir)*.1;inv.style.clipPath=`circle(${ir.toFixed(1)}px at ${ix}px ${iy}px)`;requestAnimationFrame(il)})();
 
 /* global invert (difference) cursor */
-const cur=document.createElement('div');cur.id='cur';document.body.append(cur);
+const dcur=document.createElement('div');dcur.id='cur';document.body.append(dcur);
 let ux=mx,uy=my;
-(function cl(){ux+=(mx-ux)*.25;uy+=(my-uy)*.25;cur.style.transform=`translate(${ux}px,${uy}px)`;requestAnimationFrame(cl)})();
-document.addEventListener('mouseover',e=>cur.classList.toggle('big2',!!e.target.closest('a,button,.btn,h2,.intro,.sponsor-img,.qr-box,.sponsor-thanks,.log-row,.d-line')));
+(function cl(){ux+=(mx-ux)*.25;uy+=(my-uy)*.25;dcur.style.transform=`translate(${ux}px,${uy}px)`;requestAnimationFrame(cl)})();
+document.addEventListener('mouseover',e=>dcur.classList.toggle('big2',!!e.target.closest('a,button,.btn,h2,.intro,.sponsor-img,.qr-box,.sponsor-thanks,.log-row,.d-line')));
 </script>
 </body>
 </html>
