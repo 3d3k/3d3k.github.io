@@ -1,1118 +1,471 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>3d3k——自由，即秩序！</title>
-    <link rel="preconnect" href="https://fonts.loli.net">
-    <link
-        href="https://fonts.loli.net/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap"
-        rel="stylesheet">
-    <style>
-        /* image auto fit */
-        img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            display: block;
-        }
-
-        /* QR keep full image */
-        .qr-box img {
-            object-fit: contain;
-        }
-
-        /* sponsor image */
-        .sponsor-img img {
-            border-radius: 8px;
-        }
-
-        :root {
-            --bg: #0c0b09;
-            --bg-2: #131210;
-            --panel: #17160f;
-            --line: #2a2822;
-            --green: #9dff5c;
-            --green-dim: #5a8f34;
-            --green-glow: rgba(157, 255, 92, .35);
-            --amber: #ffb454;
-            --red: #ff5c5c;
-            --text: #eae7dc;
-            --text-dim: #8f8b7e;
-            --text-dim2: #5f5c52;
-        }
-
-        * {
-            box-sizing: border-box;
-        }
-
-        html {
-            scroll-behavior: smooth;
-        }
-
-        body {
-            margin: 0;
-            background: var(--bg);
-            color: var(--text);
-            font-family: 'Inter', sans-serif;
-            overflow-x: hidden;
-        }
-
-        ::selection {
-            background: var(--green);
-            color: #0c0b09;
-        }
-
-        .mono {
-            font-family: 'JetBrains Mono', monospace;
-        }
-
-        /* faint scanline / grain atmosphere */
-        body::before {
-            content: '';
-            position: fixed;
-            inset: 0;
-            pointer-events: none;
-            z-index: 1;
-            background: repeating-linear-gradient(0deg, rgba(255, 255, 255, .012) 0 1px, transparent 1px 3px);
-            mix-blend-mode: overlay;
-        }
-
-        a {
-            color: inherit;
-        }
-
-        section {
-            scroll-margin-top: 70px;
-            position: relative;
-            z-index: 2;
-        }
-
-        .fade-in {
-            opacity: 0;
-            filter: blur(6px);
-            transition: opacity .9s ease, filter .9s ease;
-        }
-
-        .fade-in.active {
-            opacity: 1;
-            filter: blur(0);
-        }
-
-        /* ---------- nav ---------- */
-        nav {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 50;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 16px 32px;
-            background: rgba(12, 11, 9, .9);
-            border-bottom: 1px solid var(--line);
-        }
-
-        nav .brand {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 14px;
-            letter-spacing: .5px;
-        }
-
-        nav .brand img {
-            width: 22px;
-            height: 22px;
-            border-radius: 4px;
-        }
-
-        nav .brand .fallback {
-            width: 22px;
-            height: 22px;
-            border-radius: 4px;
-            background: var(--green-dim);
-            display: none;
-        }
-
-        nav .brand b {
-            color: var(--green);
-        }
-
-        nav ul {
-            display: flex;
-            gap: 0;
-            list-style: none;
-            margin: 0;
-            padding: 0;
-        }
-
-        nav ul li a {
-            font-size: 13px;
-            color: var(--text-dim);
-            text-decoration: none;
-            padding: 6px 14px;
-            border-left: 1px solid var(--line);
-        }
-
-        nav ul li:last-child a {
-            border-right: 1px solid var(--line);
-        }
-
-        nav ul li a:hover {
-            color: var(--green);
-        }
-
-        @media (max-width:760px) {
-            nav ul {
-                display: none;
-            }
-        }
-
-        /* ---------- hero ---------- */
-        .hero {
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            padding: 120px 32px 60px;
-            max-width: 1180px;
-            margin: 0 auto;
-            gap: 60px;
-        }
-
-        .hero-left {
-            flex: 1.1;
-            min-width: 0;
-        }
-
-        .hero-right {
-            flex: 1;
-            min-width: 340px;
-        }
-
-        @media (max-width:920px) {
-            .hero {
-                flex-direction: column;
-                padding-top: 130px;
-            }
-
-            .hero-right {
-                width: 100%;
-            }
-        }
-
-        .kicker {
-            font-size: 12px;
-            color: var(--green);
-            letter-spacing: 2px;
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .kicker .dot {
-            width: 6px;
-            height: 6px;
-            background: var(--green);
-            border-radius: 50%;
-            box-shadow: 0 0 8px var(--green-glow);
-            animation: blink 1.6s infinite;
-        }
-
-        @keyframes blink {
-
-            0%,
-            100% {
-                opacity: 1;
-            }
-
-            50% {
-                opacity: .2;
-            }
-        }
-
-        .hero h1 {
-            font-size: clamp(36px, 6vw, 64px);
-            line-height: 1.15;
-            margin: 0 0 22px;
-            font-weight: 800;
-            letter-spacing: -1px;
-        }
-
-        .hero h1 em {
-            color: var(--green);
-            font-style: normal;
-        }
-
-        .hero p.lede {
-            font-size: 17px;
-            line-height: 1.8;
-            color: var(--text-dim);
-            max-width: 520px;
-            margin-bottom: 34px;
-        }
-
-        .cta-row {
-            display: flex;
-            gap: 16px;
-            flex-wrap: wrap;
-            align-items: center;
-        }
-
-        .btn {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 14px;
-            font-weight: 600;
-            padding: 14px 24px;
-            border-radius: 3px;
-            text-decoration: none;
-            cursor: pointer;
-            border: 1px solid transparent;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .btn-solid {
-            background: var(--green);
-            color: #0c0b09;
-        }
-
-        .btn-solid:hover {
-            background: #b8ff87;
-        }
-
-        .btn-ghost {
-            border-color: var(--line);
-            color: var(--text);
-            background: transparent;
-        }
-
-        .btn-ghost:hover {
-            border-color: var(--green);
-            color: var(--green);
-        }
-
-        .copy-status {
-            font-size: 13px;
-            color: var(--green);
-            margin-top: 14px;
-            height: 16px;
-            opacity: 0;
-            transition: opacity .3s ease;
-            font-family: 'JetBrains Mono', monospace;
-        }
-
-        /* terminal window */
-        .term {
-            background: var(--panel);
-            border: 1px solid var(--line);
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 30px 60px -20px rgba(0, 0, 0, .6);
-        }
-
-        .term-head {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 10px 14px;
-            background: var(--bg-2);
-            border-bottom: 1px solid var(--line);
-        }
-
-        .term-head .dotc {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            background: #3a3830;
-        }
-
-        .term-head span {
-            margin-left: auto;
-            font-size: 11px;
-            color: var(--text-dim2);
-            font-family: 'JetBrains Mono', monospace;
-        }
-
-        .term-body {
-            padding: 22px 20px;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 13.5px;
-            line-height: 1.9;
-            min-height: 210px;
-        }
-
-        .term-body .ln {
-            color: var(--text-dim);
-        }
-
-        .term-body .ln .prompt {
-            color: var(--green);
-        }
-
-        .term-body .ln .ok {
-            color: var(--green);
-        }
-
-        .term-body .ln .warn {
-            color: var(--amber);
-        }
-
-        #typed {
-            color: var(--text);
-            white-space: pre-wrap;
-        }
-
-        .cursor {
-            display: inline-block;
-            width: 8px;
-            height: 16px;
-            background: var(--green);
-            vertical-align: middle;
-            animation: blink 1s steps(1) infinite;
-        }
-
-        /* ---------- section shell ---------- */
-        .wrap {
-            max-width: 1000px;
-            margin: 0 auto;
-            padding: 100px 32px;
-        }
-
-        .tag {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 12px;
-            color: var(--green);
-            letter-spacing: 2px;
-            margin-bottom: 16px;
-        }
-
-        h2 {
-            font-size: clamp(26px, 4vw, 38px);
-            font-weight: 800;
-            letter-spacing: -.5px;
-            margin: 0 0 20px;
-        }
-
-        p.body-text {
-            font-size: 16px;
-            line-height: 1.9;
-            color: var(--text-dim);
-            max-width: 640px;
-        }
-
-        /* manifest key:value box */
-        .about-grid {
-            display: grid;
-            grid-template-columns: 1.3fr .8fr;
-            gap: 48px;
-            align-items: start;
-            margin-top: 20px;
-        }
-
-        @media (max-width:840px) {
-            .about-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        .manifest {
-            background: var(--panel);
-            border: 1px solid var(--line);
-            border-radius: 8px;
-            overflow: hidden;
-        }
-
-        .manifest .m-head {
-            padding: 10px 16px;
-            background: var(--bg-2);
-            border-bottom: 1px solid var(--line);
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 12px;
-            color: var(--text-dim2);
-        }
-
-        .manifest .m-row {
-            display: flex;
-            justify-content: space-between;
-            gap: 16px;
-            padding: 12px 16px;
-            border-bottom: 1px solid var(--line);
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 13px;
-        }
-
-        .manifest .m-row:last-child {
-            border-bottom: none;
-        }
-
-        .manifest .m-row .k {
-            color: var(--text-dim2);
-        }
-
-        .manifest .m-row .v {
-            color: var(--green);
-            text-align: right;
-        }
-
-        /* diff rules */
-        .diff-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 24px;
-            margin-top: 36px;
-        }
-
-        @media (max-width:760px) {
-            .diff-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        .diff {
-            background: var(--panel);
-            border: 1px solid var(--line);
-            border-radius: 8px;
-            overflow: hidden;
-        }
-
-        .diff .d-head {
-            padding: 10px 16px;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 12px;
-            border-bottom: 1px solid var(--line);
-        }
-
-        .diff.allow .d-head {
-            color: var(--green);
-            background: rgba(157, 255, 92, .06);
-        }
-
-        .diff.deny .d-head {
-            color: var(--red);
-            background: rgba(255, 92, 92, .06);
-        }
-
-        .diff .d-line {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 13px;
-            padding: 10px 16px;
-            border-bottom: 1px solid rgba(255, 255, 255, .03);
-        }
-
-        .diff.allow .d-line {
-            color: #c9f7a8;
-        }
-
-        .diff.deny .d-line {
-            color: #ffc2c2;
-        }
-
-        .diff .d-line b {
-            margin-right: 8px;
-            opacity: .6;
-        }
-
-        .note {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 12px;
-            color: var(--text-dim2);
-            margin-top: 20px;
-        }
-
-        /* git-log timeline */
-        .log {
-            margin-top: 36px;
-        }
-
-        .log-row {
-            display: flex;
-            gap: 20px;
-            padding: 18px 0;
-            border-bottom: 1px solid var(--line);
-        }
-
-        .log-row:last-child {
-            border-bottom: none;
-        }
-
-        .log-hash {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 12px;
-            color: var(--green-dim);
-            width: 70px;
-            flex-shrink: 0;
-            padding-top: 2px;
-        }
-
-        .log-main .log-date {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 11px;
-            color: var(--text-dim2);
-            margin-bottom: 4px;
-        }
-
-        .log-main h4 {
-            margin: 0 0 6px;
-            font-size: 16px;
-            font-weight: 700;
-        }
-
-        .log-main p {
-            margin: 0;
-            font-size: 14px;
-            color: var(--text-dim);
-            line-height: 1.7;
-        }
-
-        /* join */
-        .join-term {
-            max-width: 640px;
-            margin: 36px auto 0;
-        }
-
-        .center {
-            text-align: center;
-        }
-
-        footer {
-            text-align: center;
-            padding: 50px 24px 70px;
-            border-top: 1px solid var(--line);
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 12px;
-            color: var(--text-dim2);
-        }
-
-        footer a {
-            color: var(--green);
-            text-decoration: none;
-        }
-
-        /* ---------- sponsor ---------- */
-        .sponsor-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 48px;
-            align-items: center;
-            margin-top: 20px;
-        }
-
-        @media (max-width:840px) {
-            .sponsor-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        .sponsor-img {
-            width: 100%;
-            aspect-ratio: 4/3;
-            border-radius: 8px;
-            border: 1px dashed var(--line);
-            background: repeating-linear-gradient(45deg, #17160f 0 12px, #1b1a13 12px 24px);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            color: var(--text-dim2);
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 13px;
-            padding: 20px;
-        }
-
-        .sponsor-thanks {
-            margin-top: 22px;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 13px;
-            color: var(--text-dim2);
-        }
-
-        .sponsor-thanks b {
-            color: var(--green);
-        }
-
-        /* =====================
-           sponsor image viewer
-        ===================== */
-
-        .sponsor-img {
-            cursor: zoom-in;
-            overflow: hidden;
-        }
-
-        .sponsor-img img {
-            transition: transform .3s ease;
-        }
-
-        .sponsor-img:hover img {
-            transform: scale(1.05);
-        }
-
-        .image-viewer {
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,.88);
-            backdrop-filter: blur(6px);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 9999;
-            padding: 30px;
-            cursor: zoom-out;
-        }
-
-        .image-viewer.open {
-            display: flex;
-        }
-
-        .image-viewer img {
-            width: auto;
-            height: auto;
-            max-width: 96vw;
-            max-height: 96vh;
-            object-fit: contain;
-            border-radius: 10px;
-            box-shadow:0 0 50px rgba(0,0,0,.8);
-        }
-
-        /* modal */
-        .modal-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(6, 5, 4, .8);
-            backdrop-filter: blur(3px);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 200;
-            padding: 20px;
-        }
-
-        .modal-overlay.open {
-            display: flex;
-        }
-
-        .modal-box {
-            width: 100%;
-            max-width: 420px;
-            background: var(--panel);
-            border: 1px solid var(--line);
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 40px 80px -20px rgba(0, 0, 0, .7);
-        }
-
-        .modal-box .term-head span.mt {
-            margin-left: 8px;
-        }
-
-        .modal-close {
-            margin-left: auto;
-            cursor: pointer;
-            color: var(--text-dim2);
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 14px;
-            background: none;
-            border: none;
-            padding: 0 4px;
-        }
-
-        .modal-close:hover {
-            color: var(--red);
-        }
-
-        .modal-body {
-            padding: 22px 20px;
-        }
-
-        .modal-body h3 {
-            margin: 0 0 10px;
-            font-size: 18px;
-        }
-
-        .modal-body p {
-            font-size: 14px;
-            line-height: 1.8;
-            color: var(--text-dim);
-            margin: 0 0 18px;
-        }
-
-        .qr-row {
-            display: flex;
-            gap: 18px;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-
-        .qr-row > div {
-            width: min(44%, 180px);
-        }
-
-        .qr-box {
-            width: 100%;
-            aspect-ratio: 1/1;
-            border-radius: 8px;
-            border: 1px dashed var(--line);
-            background: repeating-linear-gradient(45deg, #17160f 0 10px, #1b1a13 10px 20px);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            color: var(--text-dim2);
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 11px;
-            padding: 12px;
-            box-shadow: inset 0 0 0 1px rgba(255,255,255,.02);
-        }
-
-        .qr-box img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-            border-radius: 6px;
-        }
-
-        .qr-label {
-            text-align: center;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 12px;
-            color: var(--text-dim2);
-            margin-top: 8px;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>3d3k——自由，即秩序！</title>
+<link rel="preconnect" href="https://fonts.loli.net">
+<link href="https://fonts.loli.net/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+img{width:100%;height:100%;object-fit:cover;display:block}
+.qr-box img{object-fit:contain}
+:root{--bg:#0a0908;--bg-2:#11100d;--panel:rgba(23,22,15,.72);--line:#2a2822;--green:#9dff5c;--green-dim:#5a8f34;--glow:rgba(157,255,92,.35);--amber:#ffb454;--red:#ff5c5c;--text:#eae7dc;--dim:#8f8b7e;--dim2:#5f5c52}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;overflow-x:hidden}
+::selection{background:var(--green);color:#0a0908}
+.mono{font-family:'JetBrains Mono',monospace}
+a{color:inherit}
+section{scroll-margin-top:70px;position:relative;z-index:2}
+#bg{position:fixed;inset:0;z-index:0;pointer-events:none}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:1;background:repeating-linear-gradient(0deg,rgba(255,255,255,.014) 0 1px,transparent 1px 3px)}
+body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:1;background:radial-gradient(ellipse at center,transparent 50%,rgba(0,0,0,.65))}
+#glow{position:fixed;width:520px;height:520px;left:0;top:0;margin:-260px 0 0 -260px;border-radius:50%;pointer-events:none;z-index:1;background:radial-gradient(circle,rgba(157,255,92,.09),transparent 65%);will-change:transform}
+#progress{position:fixed;top:0;left:0;height:2px;width:0;background:linear-gradient(90deg,var(--green-dim),var(--green),#d8ffb8);box-shadow:0 0 12px var(--green);z-index:100}
+
+/* reveal */
+.fade-in{opacity:0;filter:blur(8px);transform:translateY(28px);transition:opacity .9s cubic-bezier(.2,.7,.2,1) calc(var(--i,0)*90ms),filter .9s ease calc(var(--i,0)*90ms),transform .9s cubic-bezier(.2,.7,.2,1) calc(var(--i,0)*90ms)}
+.fade-in.active{opacity:1;filter:blur(0);transform:none}
+
+/* nav */
+nav{position:fixed;top:0;left:0;right:0;z-index:50;display:flex;align-items:center;justify-content:space-between;padding:14px 32px;background:rgba(10,9,8,.7);backdrop-filter:blur(14px);border-bottom:1px solid var(--line);animation:navIn .8s ease both}
+@keyframes navIn{from{transform:translateY(-100%)}}
+nav .brand{display:flex;align-items:center;gap:10px;font-size:14px}
+nav .brand img{width:22px;height:22px;border-radius:4px;animation:spinY 6s linear infinite}
+@keyframes spinY{to{transform:rotateY(360deg)}}
+nav .brand .fallback{width:22px;height:22px;border-radius:4px;background:var(--green-dim);display:none}
+nav .brand b{color:var(--green)}
+nav ul{display:flex;list-style:none;margin:0;padding:0}
+nav ul li a{position:relative;font-size:13px;color:var(--dim);text-decoration:none;padding:6px 14px;display:block;transition:color .25s}
+nav ul li a::after{content:'';position:absolute;left:14px;right:14px;bottom:0;height:1px;background:var(--green);transform:scaleX(0);transform-origin:left;transition:transform .3s;box-shadow:0 0 8px var(--green)}
+nav ul li a:hover,nav ul li a.on{color:var(--green)}
+nav ul li a:hover::after,nav ul li a.on::after{transform:scaleX(1)}
+@media(max-width:760px){nav ul{display:none}}
+
+/* hero */
+.hero{position:relative;z-index:2;min-height:100vh;display:flex;align-items:center;padding:120px 32px 60px;max-width:1180px;margin:0 auto;gap:60px}
+.hero-left{flex:1.1;min-width:0}
+.hero-right{flex:1;min-width:340px;perspective:1000px;position:relative}
+@media(max-width:920px){.hero{flex-direction:column;padding-top:130px}.hero-right{width:100%;min-width:0}}
+.kicker{font-size:12px;color:var(--green);letter-spacing:2px;margin-bottom:20px;display:flex;align-items:center;gap:8px}
+.kicker .dot{width:6px;height:6px;background:var(--green);border-radius:50%;box-shadow:0 0 8px var(--glow);animation:blink 1.6s infinite;position:relative}
+.kicker .dot::after{content:'';position:absolute;inset:-6px;border:1px solid var(--green);border-radius:50%;animation:ping 1.6s infinite}
+@keyframes ping{from{transform:scale(.4);opacity:.9}to{transform:scale(2.2);opacity:0}}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+.hero h1{font-size:clamp(36px,6vw,64px);line-height:1.15;margin:0 0 22px;font-weight:800;letter-spacing:-1px}
+.hero h1 .ln{display:block;overflow:hidden}
+.hero h1 .ln>span{display:block;transform:translateY(110%);animation:rise 1s cubic-bezier(.2,.8,.2,1) forwards}
+.hero h1 .ln:nth-child(2)>span{animation-delay:.18s}
+@keyframes rise{to{transform:none}}
+.hero h1 em{font-style:normal;color:var(--green);position:relative;text-shadow:0 0 30px var(--glow);display:inline-block}
+.hero h1 em::before,.hero h1 em::after{content:attr(data-t);position:absolute;left:0;top:0;opacity:0}
+.hero h1 em::before{color:#ff5c8a;animation:glitch1 5s infinite}
+.hero h1 em::after{color:#5cd6ff;animation:glitch2 5s infinite}
+@keyframes glitch1{0%,92%,100%{opacity:0;transform:none}93%{opacity:.8;transform:translate(-4px,1px);clip-path:inset(10% 0 55% 0)}96%{opacity:.8;transform:translate(3px,-1px);clip-path:inset(60% 0 5% 0)}}
+@keyframes glitch2{0%,92%,100%{opacity:0;transform:none}94%{opacity:.8;transform:translate(4px,-1px);clip-path:inset(50% 0 20% 0)}97%{opacity:.8;transform:translate(-3px,1px);clip-path:inset(5% 0 70% 0)}}
+.hero p.lede{font-size:17px;line-height:1.8;color:var(--dim);max-width:520px;margin-bottom:34px}
+.cta-row{display:flex;gap:16px;flex-wrap:wrap;align-items:center}
+.btn{position:relative;overflow:hidden;font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:600;padding:14px 24px;border-radius:4px;text-decoration:none;cursor:pointer;border:1px solid transparent;display:inline-flex;align-items:center;gap:8px;transition:transform .2s,box-shadow .3s,border-color .3s,color .3s;will-change:transform}
+.btn::after{content:'';position:absolute;top:0;left:-80%;width:50%;height:100%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.45),transparent);transform:skewX(-20deg);transition:left .6s}
+.btn:hover::after{left:140%}
+.btn-solid{background:var(--green);color:#0a0908;box-shadow:0 0 0 0 var(--glow);animation:pulse 2.6s infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(157,255,92,.45)}70%,100%{box-shadow:0 0 0 16px rgba(157,255,92,0)}}
+.btn-solid:hover{background:#b8ff87;box-shadow:0 10px 36px -6px var(--glow)}
+.btn-ghost{border-color:var(--line);color:var(--text);background:rgba(255,255,255,.02)}
+.btn-ghost:hover{border-color:var(--green);color:var(--green);box-shadow:inset 0 0 20px rgba(157,255,92,.08)}
+.copy-status{font-size:13px;color:var(--green);margin-top:14px;height:16px;opacity:0;transform:translateY(6px);transition:opacity .3s,transform .3s;font-family:'JetBrains Mono',monospace}
+.copy-status.show{opacity:1;transform:none}
+
+/* 3D cubes */
+.cube{position:absolute;width:var(--s);height:var(--s);transform-style:preserve-3d;animation:cubeSpin var(--d) linear infinite,float 6s ease-in-out infinite;pointer-events:none;z-index:0}
+.cube i{position:absolute;inset:0;border:1px solid rgba(157,255,92,.5);background:rgba(157,255,92,.05);box-shadow:inset 0 0 14px rgba(157,255,92,.15)}
+.cube i:nth-child(1){transform:translateZ(calc(var(--s)/2))}
+.cube i:nth-child(2){transform:rotateY(180deg) translateZ(calc(var(--s)/2))}
+.cube i:nth-child(3){transform:rotateY(90deg) translateZ(calc(var(--s)/2))}
+.cube i:nth-child(4){transform:rotateY(-90deg) translateZ(calc(var(--s)/2))}
+.cube i:nth-child(5){transform:rotateX(90deg) translateZ(calc(var(--s)/2))}
+.cube i:nth-child(6){transform:rotateX(-90deg) translateZ(calc(var(--s)/2))}
+@keyframes cubeSpin{to{transform:rotateX(360deg) rotateY(360deg)}}
+@keyframes float{50%{margin-top:-22px}}
+.hero-right .cube:nth-of-type(1){--s:60px;--d:14s;top:-50px;right:-10px}
+.hero-right .cube:nth-of-type(2){--s:36px;--d:9s;bottom:-40px;left:-20px;animation-delay:0s,-2s}
+.hero-right .cube:nth-of-type(3){--s:24px;--d:7s;top:40%;right:-34px;animation-delay:0s,-4s}
+
+/* terminal */
+.term{position:relative;background:var(--panel);backdrop-filter:blur(10px);border:1px solid var(--line);border-radius:10px;overflow:hidden;box-shadow:0 30px 60px -20px rgba(0,0,0,.7),0 0 0 1px rgba(157,255,92,.04);transition:transform .15s ease-out,box-shadow .3s;transform-style:preserve-3d;z-index:1}
+.term:hover{box-shadow:0 30px 70px -20px rgba(0,0,0,.8),0 0 40px -10px var(--glow)}
+.term::before{content:'';position:absolute;left:0;right:0;height:60px;top:-60px;background:linear-gradient(transparent,rgba(157,255,92,.07),transparent);animation:scan 5s linear infinite;pointer-events:none}
+@keyframes scan{to{top:110%}}
+.term-head{display:flex;align-items:center;gap:8px;padding:10px 14px;background:rgba(17,16,13,.8);border-bottom:1px solid var(--line)}
+.term-head .dotc{width:10px;height:10px;border-radius:50%;background:#3a3830;transition:background .3s}
+.term:hover .dotc:nth-child(1){background:#ff5f56}.term:hover .dotc:nth-child(2){background:#ffbd2e}.term:hover .dotc:nth-child(3){background:#27c93f}
+.term-head span{margin-left:auto;font-size:11px;color:var(--dim2);font-family:'JetBrains Mono',monospace}
+.term-body{padding:22px 20px;font-family:'JetBrains Mono',monospace;font-size:13.5px;line-height:1.9;min-height:210px}
+.term-body .ok{color:var(--green)}.term-body .warn{color:var(--amber)}
+#typed{color:var(--dim);white-space:pre-wrap}
+.cursor{display:inline-block;width:8px;height:16px;background:var(--green);vertical-align:middle;animation:blink 1s steps(1) infinite;box-shadow:0 0 8px var(--green)}
+
+/* sections */
+.wrap{max-width:1000px;margin:0 auto;padding:100px 32px}
+.tag{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--green);letter-spacing:2px;margin-bottom:16px;min-height:18px}
+h2{font-size:clamp(26px,4vw,38px);font-weight:800;letter-spacing:-.5px;margin:0 0 20px;background:linear-gradient(100deg,var(--text) 40%,var(--green) 60%,var(--text));background-size:250% 100%;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;animation:sheen 7s linear infinite}
+@keyframes sheen{to{background-position:-250% 0}}
+p.body-text{font-size:16px;line-height:1.9;color:var(--dim);max-width:640px}
+
+/* spotlight cards */
+.spot{position:relative;background:var(--panel);backdrop-filter:blur(8px);border:1px solid var(--line);border-radius:10px;overflow:hidden;transition:border-color .3s,transform .4s cubic-bezier(.2,.7,.2,1)}
+.spot::before{content:'';position:absolute;inset:0;pointer-events:none;opacity:0;transition:opacity .3s;background:radial-gradient(260px circle at var(--mx,50%) var(--my,50%),rgba(157,255,92,.13),transparent 70%)}
+.spot:hover{border-color:rgba(157,255,92,.35);transform:translateY(-4px)}
+.spot:hover::before{opacity:1}
+.about-grid{display:grid;grid-template-columns:1.3fr .8fr;gap:48px;align-items:start;margin-top:20px}
+@media(max-width:840px){.about-grid{grid-template-columns:1fr}}
+.manifest .m-head{padding:10px 16px;background:rgba(17,16,13,.8);border-bottom:1px solid var(--line);font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--dim2)}
+.manifest .m-row{display:flex;justify-content:space-between;gap:16px;padding:12px 16px;border-bottom:1px solid var(--line);font-family:'JetBrains Mono',monospace;font-size:13px;transition:background .25s,padding .25s}
+.manifest .m-row:hover{background:rgba(157,255,92,.05);padding-left:22px}
+.manifest .m-row:last-child{border-bottom:none}
+.manifest .k{color:var(--dim2)}.manifest .v{color:var(--green);text-align:right}
+.manifest .v.run::before{content:'●';margin-right:6px;animation:blink 1.4s infinite;text-shadow:0 0 8px var(--green)}
+
+/* diff */
+.diff-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:36px}
+@media(max-width:760px){.diff-grid{grid-template-columns:1fr}}
+.diff .d-head{padding:10px 16px;font-family:'JetBrains Mono',monospace;font-size:12px;border-bottom:1px solid var(--line)}
+.diff.allow .d-head{color:var(--green);background:rgba(157,255,92,.06)}
+.diff.deny .d-head{color:var(--red);background:rgba(255,92,92,.06)}
+.diff.deny::before{background:radial-gradient(260px circle at var(--mx,50%) var(--my,50%),rgba(255,92,92,.14),transparent 70%)}
+.diff.deny:hover{border-color:rgba(255,92,92,.4)}
+.diff .d-line{font-family:'JetBrains Mono',monospace;font-size:13px;padding:10px 16px;border-bottom:1px solid rgba(255,255,255,.03);opacity:0;transform:translateX(-18px);transition:opacity .6s ease calc(var(--j)*80ms + .2s),transform .6s ease calc(var(--j)*80ms + .2s),background .2s}
+.diff.active .d-line{opacity:1;transform:none}
+.diff .d-line:hover{background:rgba(255,255,255,.04)}
+.diff.allow .d-line{color:#c9f7a8}.diff.deny .d-line{color:#ffc2c2}
+.diff .d-line b{margin-right:8px;opacity:.6}
+.note{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--dim2);margin-top:20px}
+
+/* timeline */
+.log{margin-top:36px;position:relative;padding-left:34px}
+.log::before{content:'';position:absolute;left:7px;top:6px;bottom:6px;width:2px;background:var(--line)}
+.log-line{position:absolute;left:7px;top:6px;width:2px;height:0;background:linear-gradient(var(--green-dim),var(--green));box-shadow:0 0 10px var(--green)}
+.log-row{position:relative;display:flex;gap:20px;padding:18px 16px;margin-left:-16px;border-radius:8px;border-bottom:1px solid transparent;transition:background .3s}
+.log-row:hover{background:rgba(157,255,92,.04)}
+.log-row::before{content:'';position:absolute;left:-23px;top:24px;width:10px;height:10px;border-radius:50%;background:var(--bg);border:2px solid var(--green-dim);transition:all .4s}
+.log-row.active::before{border-color:var(--green);background:var(--green);box-shadow:0 0 12px var(--green);animation:node 2.4s infinite}
+@keyframes node{50%{box-shadow:0 0 0 7px rgba(157,255,92,0)}}
+.log-hash{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--green-dim);width:70px;flex-shrink:0;padding-top:2px}
+.log-main .log-date{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--dim2);margin-bottom:4px}
+.log-main h4{margin:0 0 6px;font-size:16px;font-weight:700}
+.log-main p{margin:0;font-size:14px;color:var(--dim);line-height:1.7}
+
+/* sponsor */
+.sponsor-grid{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center;margin-top:20px}
+@media(max-width:840px){.sponsor-grid{grid-template-columns:1fr}}
+.sponsor-img{width:100%;aspect-ratio:4/3;border-radius:10px;border:1px solid var(--line);background:repeating-linear-gradient(45deg,#17160f 0 12px,#1b1a13 12px 24px);cursor:zoom-in;overflow:hidden;position:relative}
+.sponsor-img::after{content:'⤢ 点击放大';position:absolute;right:10px;bottom:10px;font:11px 'JetBrains Mono',monospace;color:var(--green);background:rgba(10,9,8,.8);padding:4px 8px;border-radius:4px;opacity:0;transform:translateY(6px);transition:.3s}
+.sponsor-img:hover::after{opacity:1;transform:none}
+.sponsor-img img{transition:transform .6s cubic-bezier(.2,.7,.2,1)}
+.sponsor-img:hover img{transform:scale(1.07)}
+.sponsor-thanks{margin-top:10px;font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--dim2);transition:transform .25s,color .25s}
+.sponsor-thanks:hover{transform:translateX(8px);color:var(--dim)}
+.sponsor-thanks b{color:var(--green)}
+.sponsor-grid .btn{margin:6px 0 18px}
+
+.join-term{max-width:640px;margin:36px auto 0}
+.center{text-align:center}
+footer{position:relative;z-index:2;text-align:center;padding:50px 24px 70px;border-top:1px solid var(--line);font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--dim2)}
+footer a{color:var(--green);text-decoration:none}
+
+/* viewer + modal */
+.image-viewer{position:fixed;inset:0;background:rgba(0,0,0,.88);backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;z-index:9999;padding:30px;cursor:zoom-out}
+.image-viewer.open{display:flex;animation:fadeBg .3s}
+.image-viewer img{width:auto;height:auto;max-width:96vw;max-height:96vh;object-fit:contain;border-radius:10px;box-shadow:0 0 50px rgba(0,0,0,.8);animation:zoomIn .4s cubic-bezier(.2,.8,.2,1)}
+@keyframes fadeBg{from{opacity:0}}
+@keyframes zoomIn{from{transform:scale(.85);opacity:0}}
+.modal-overlay{position:fixed;inset:0;background:rgba(6,5,4,.8);backdrop-filter:blur(5px);display:none;align-items:center;justify-content:center;z-index:200;padding:20px}
+.modal-overlay.open{display:flex;animation:fadeBg .3s}
+.modal-box{width:100%;max-width:420px;background:#17160f;border:1px solid var(--line);border-radius:10px;overflow:hidden;box-shadow:0 40px 80px -20px rgba(0,0,0,.7),0 0 50px -15px var(--glow);animation:pop .5s cubic-bezier(.2,1.3,.4,1)}
+@keyframes pop{from{transform:scale(.8) translateY(30px);opacity:0}}
+.modal-box .term-head span.mt{margin-left:8px}
+.modal-close{margin-left:auto;cursor:pointer;color:var(--dim2);font-family:'JetBrains Mono',monospace;font-size:14px;background:none;border:none;padding:0 4px;transition:color .2s}
+.modal-close:hover{color:var(--red)}
+.modal-body{padding:22px 20px}
+.modal-body h3{margin:0 0 10px;font-size:18px}
+.modal-body p{font-size:14px;line-height:1.8;color:var(--dim);margin:0 0 18px}
+.qr-row{display:flex;gap:18px;justify-content:center;flex-wrap:wrap}
+.qr-row>div{width:min(44%,180px)}
+.qr-box{width:100%;aspect-ratio:1/1;border-radius:8px;border:1px dashed var(--line);background:#1b1a13;padding:8px;cursor:zoom-in;transition:transform .3s,border-color .3s,box-shadow .3s}
+.qr-box:hover{transform:translateY(-4px) scale(1.03);border-color:var(--green);box-shadow:0 10px 30px -8px var(--glow)}
+.qr-box img{border-radius:6px}
+.qr-label{text-align:center;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--dim2);margin-top:8px}
+
+@media(pointer:coarse){#glow{display:none}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}.fade-in,.d-line{opacity:1!important;filter:none!important;transform:none!important}.hero h1 .ln>span{transform:none}}
+</style>
 </head>
-
 <body>
+<canvas id="bg"></canvas>
+<div id="glow"></div>
+<div id="progress"></div>
 
-    <nav>
-        <div class="brand mono">
-            <img src="https://3d3k.discourse.group/favicon.ico" alt="3D3K"
-                onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-            <div class="fallback"></div>
-            3d3k<b>@</b>world<b>:~$</b>
-        </div>
-        <ul class="mono">
-            <li><a href="#about">--about</a></li>
-            <li><a href="#rules">--rules</a></li>
-            <li><a href="#log">--log</a></li>
-            <li><a href="#sponsor">--sponsor</a></li>
-            <li><a href="#join">--join</a></li>
-        </ul>
-    </nav>
+<nav>
+  <div class="brand mono">
+    <img src="https://3d3k.discourse.group/favicon.ico" alt="3D3K" onerror="this.style.display='none';this.nextElementSibling.style.display='block';">
+    <div class="fallback"></div>
+    3d3k<b>@</b>world<b>:~$</b>
+  </div>
+  <ul class="mono">
+    <li><a href="#about">--about</a></li>
+    <li><a href="#rules">--rules</a></li>
+    <li><a href="#log">--log</a></li>
+    <li><a href="#sponsor">--sponsor</a></li>
+    <li><a href="#join">--join</a></li>
+  </ul>
+</nav>
 
-    <!-- HERO -->
-    <div class="hero">
-        <div class="hero-left fade-in active">
-            <div class="kicker"><span class="dot"></span>SINCE 2025.06.04 · 3d3k.org</div>
-            <h1>自由，<em>即秩序。</em><br>没有边界，只有玩家。</h1>
-            <p class="lede">3D3K（原 2b2tCN）没有强制的管理约束，也没有繁琐的玩法限制。PVP、拆家、结盟、背叛——所有玩法都由你自己定义。</p>
-            <div class="cta-row">
-                <button class="btn btn-solid" onclick="copyIP('hero-status')">$ 复制服务器 IP</button>
-                <a class="btn btn-ghost" href="https://bbs.3d3k.org" target="_blank" rel="noopener">浏览论坛 ↗</a>
-            </div>
-            <div id="hero-status" class="copy-status">已复制服务器IP 3d3k.org 到剪贴板</div>
-        </div>
-
-        <div class="hero-right fade-in active">
-            <div class="term">
-                <div class="term-head">
-                    <div class="dotc"></div>
-                    <div class="dotc"></div>
-                    <div class="dotc"></div>
-                    <span>connect.sh</span>
-                </div>
-                <div class="term-body">
-                    <div id="typed"></div><span class="cursor"></span>
-                </div>
-            </div>
-        </div>
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-left">
+    <div class="kicker mono"><span class="dot"></span>SINCE 2025.06.04 · 3d3k.org</div>
+    <h1><span class="ln"><span>自由，<em data-t="即秩序。">即秩序。</em></span></span><span class="ln"><span>没有边界，只有玩家。</span></span></h1>
+    <p class="lede fade-in active" style="--i:5;transition-delay:.5s">3D3K（原 2b2tCN）没有强制的管理约束，也没有繁琐的玩法限制。PVP、拆家、结盟、背叛——所有玩法都由你自己定义。</p>
+    <div class="cta-row fade-in active" style="--i:7">
+      <button class="btn btn-solid magnet" onclick="copyIP('hero-status')">$ 复制服务器 IP</button>
+      <a class="btn btn-ghost magnet" href="https://bbs.3d3k.org" target="_blank" rel="noopener">浏览论坛 ↗</a>
     </div>
-
-    <!-- ABOUT -->
-    <section id="about" class="wrap">
-        <div class="tag fade-in"># about</div>
-        <h2 class="fade-in">这不是养老服，<br>是野蛮生长的自留地。</h2>
-        <div class="about-grid">
-            <div>
-                <p class="body-text fade-in">
-                    3D3K 前身为 2b2tCN，由腐竹 Zhouyi 独立维护。这里不追求秩序井然的和平——PVP 对抗、资源争夺、拆家偷袭、结盟争霸，全都是被默认允许的玩法，腐竹基本不干涉游戏内的正常对抗。
-                </p>
-                <p class="body-text fade-in" style="margin-top:16px;">
-                    域名 3d3k.org 由社区玩家 xuanfeng0316 赞助支持。从最初几个朋友的私服，到如今聚集了一批喜欢自由探索的玩家，服务器已经走过了自己的第一年。
-                </p>
-            </div>
-            <div class="manifest fade-in">
-                <div class="m-head">server.manifest</div>
-                <div class="m-row"><span class="k">status</span><span class="v">running</span></div>
-                <div class="m-row"><span class="k">ip</span><span class="v">3d3k.org</span></div>
-                <div class="m-row"><span class="k">type</span><span class="v">无规则生存</span></div>
-                <div class="m-row"><span class="k">edition</span><span class="v">Java</span></div>
-                <div class="m-row"><span class="k">launched</span><span class="v">2025-06-04</span></div>
-                <div class="m-row"><span class="k">predecessor</span><span class="v">2b2tCN</span></div>
-                <div class="m-row"><span class="k">forum</span><span class="v">bbs.3d3k.org</span></div>
-            </div>
-        </div>
-    </section>
-
-    <!-- RULES -->
-    <section id="rules" class="wrap">
-        <div class="tag fade-in"># rules.diff</div>
-        <h2 class="fade-in">自由不代表无法无天。</h2>
-        <p class="body-text fade-in">游戏内的正常对抗随便打，但服务器本身的稳定运行，是唯一不可触碰的底线。</p>
-        <div class="diff-grid">
-            <div class="diff allow fade-in">
-                <div class="d-head">+ allowed.diff</div>
-                <div class="d-line"><b>+</b>PVP 对抗、偷袭、埋伏</div>
-                <div class="d-line"><b>+</b>抢夺资源、拆家、破坏建筑</div>
-                <div class="d-line"><b>+</b>设置陷阱，恶意整活</div>
-                <div class="d-line"><b>+</b>结盟争霸，自由社交</div>
-                <div class="d-line"><b>+</b>肝矿建筑，随性而为</div>
-                <div class="d-line"><b>+</b>利用漏洞刷物品 / dupe</div>
-                <div class="d-line"><b>+</b>外挂、透视、飞行、秒杀、自动挖矿</div>
-                <div class="d-line"><b>+</b>恶意破坏、盗号、骗装备</div>
-            </div>
-            <div class="diff deny fade-in">
-                <div class="d-head">− banned.diff</div>
-                <div class="d-line"><b>−</b>攻击服务器 / 致其崩溃</div>
-                <div class="d-line"><b>−</b>未经授权转载 / 抄袭3d3k品牌内容</div>
-                <div class="d-line"><b>−</b>冒用3d3k名义进行商业活动</div>
-            </div>
-        </div>
-        <div class="note">$ banlist --查询封禁记录已公开上线</div>
-    </section>
-
-    <!-- LOG / TIMELINE -->
-    <section id="log" class="wrap">
-        <div class="tag fade-in"># git log --oneline</div>
-        <h2 class="fade-in">服务器提交记录</h2>
-        <div class="log">
-            <div class="log-row fade-in">
-                <div class="log-hash">#0001</div>
-                <div class="log-main">
-                    <div class="log-date">2025-06-04</div>
-                    <h4>init: 正式开服</h4>
-                    <p>3D3K 无规则服（原 2b2tCN）正式上线，地址 3d3k.org，域名由玩家 xuanfeng0316 赞助支持。</p>
-                </div>
-            </div>
-            <div class="log-row fade-in">
-                <div class="log-hash">#0002</div>
-                <div class="log-main">
-                    <div class="log-date">运营期间</div>
-                    <h4>feat: banlist 查询系统上线</h4>
-                    <p>玩家可自行查询封禁记录，规则执行更加透明。</p>
-                </div>
-            </div>
-            <div class="log-row fade-in">
-                <div class="log-hash">#0003</div>
-                <div class="log-main">
-                    <div class="log-date">运营期间</div>
-                    <h4>remove: 关闭快捷传送</h4>
-                    <p>下线 TPA、随机传送等功能，鼓励真实的探索与迁徙。</p>
-                </div>
-            </div>
-            <div class="log-row fade-in">
-                <div class="log-hash">#0004</div>
-                <div class="log-main">
-                    <div class="log-date">运营期间</div>
-                    <h4>perf: 服务器配置升级</h4>
-                    <p>针对卡顿反馈进行硬件与配置升级，提升游玩体验。</p>
-                </div>
-            </div>
-            <div class="log-row fade-in">
-                <div class="log-hash">#0005</div>
-                <div class="log-main">
-                    <div class="log-date">2026-06-06</div>
-                    <h4>release: 一周年庆典</h4>
-                    <p>从孤身一人到三五成群——3D3K 一周年庆典开启，全天开放，赠送限定纪念物品。</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- SPONSOR -->
-    <section id="sponsor" class="wrap">
-        <div class="tag fade-in"># sponsor</div>
-        <h2 class="fade-in">我们需要你的帮助。</h2>
-        <div class="sponsor-grid">
-            <div>
-                <p class="body-text fade-in">
-                    服务器、域名和日常维护都需要持续的投入。3D3K 能走到今天，离不开玩家们——如果你也喜欢这片自由的世界，希望它能一直运行下去，欢迎支持我们。
-                </p>
-                <button class="btn btn-solid fade-in" onclick="openSponsorModal()">$ 支持我们</button>
-                <div class="sponsor-thanks fade-in"># 特别鸣谢</div>
-                <div class="sponsor-thanks fade-in"># <b>xuanfeng0316</b>（域名赞助）</div>
-                <div class="sponsor-thanks fade-in"># <b>MinecraftCurious</b></div>
-                <div class="sponsor-thanks fade-in"># <b>zyssgzzyssgz</b></div>
-                <div class="sponsor-thanks fade-in"># <b>111</b></div>
-                <div class="sponsor-thanks fade-in"># <b>3333</b></div>
-                <div class="sponsor-thanks fade-in"># <b>knepts</b></div>
-                <div class="sponsor-thanks fade-in"># <b>Yeye</b></div>
-                <div class="sponsor-thanks fade-in"># <b>fruit0v0</b></div>
-            </div>
-            <div class="sponsor-img fade-in" onclick="openImageViewer('img/World.jpg')">
-                <img src="img/World.jpg" alt="World" onclick="event.stopPropagation(); openImageViewer('img/World.jpg')">
-            </div>
-        </div>
-    </section>
-
-    <!-- JOIN -->
-    <section id="join" class="wrap center">
-        <div class="tag fade-in" style="justify-content:center;display:flex;"># join</div>
-        <h2 class="fade-in">现在，连接进去。</h2>
-        <p class="body-text fade-in" style="margin:0 auto;">打开 Minecraft Java 版，添加服务器，剩下的故事由你自己书写。</p>
-
-        <div class="term join-term fade-in">
-            <div class="term-head">
-                <div class="dotc"></div>
-                <div class="dotc"></div>
-                <div class="dotc"></div>
-                <span>join.sh</span>
-            </div>
-            <div class="term-body" style="text-align:left;">
-                <div class="ln"><span class="prompt">$</span> minecraft-launcher connect <span
-                        class="ok">3d3k.org</span></div>
-                <div class="ln" style="margin-top:8px;">
-                    <button class="btn btn-solid" onclick="copyIP('join-status')" style="margin-top:6px;">$ 复制
-                        IP</button>
-                    <a class="btn btn-ghost" href="https://bbs.3d3k.org" target="_blank" rel="noopener"
-                        style="margin-top:6px; margin-left:10px;">论坛 ↗</a>
-                </div>
-            </div>
-        </div>
-        <div id="join-status" class="copy-status" style="text-align:center;">已复制 3d3k.org 到剪贴板</div>
-    </section>
-
-    <footer>
-        <a href="/copyright">Copyright (c) 2026 3D3K. All Rights Reserved.</a>
-    </footer>
-
-    <script>
-        function openSponsorModal() {
-            document.getElementById('sponsorModal').classList.add('open');
-            document.body.style.overflow = 'hidden';
-        }
-        function closeSponsorModal() {
-            document.getElementById('sponsorModal').classList.remove('open');
-            document.body.style.overflow = '';
-        }
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') closeSponsorModal();
-        });
-
-        function copyIP(id) {
-            navigator.clipboard.writeText('3d3k.org').then(() => {
-                const el = document.getElementById(id);
-                if (el) {
-                    el.style.opacity = '1';
-                    clearTimeout(el._t);
-                    el._t = setTimeout(() => el.style.opacity = '0', 2200);
-                }
-            });
-        }
-
-        // scroll reveal
-        const io = new IntersectionObserver((entries) => {
-            entries.forEach(e => {
-                if (e.isIntersecting) { e.target.classList.add('active'); io.unobserve(e.target); }
-            });
-        }, { threshold: .15 });
-        document.querySelectorAll('.fade-in').forEach(el => io.observe(el));
-
-        // typewriter terminal
-        const lines = [
-
-            { text: '$ minecraft-launcher connect 3d3k.org', cls: 'warn' },
-            { text: '> connecting to 3d3k.org ...', cls: '' },
-            { text: '> handshake ok', cls: 'ok' },
-            { text: '> 无规则协议已启用', cls: 'ok' },
-            { text: '> TPA / 随机传送: disabled', cls: '' },
-            { text: '> banlist: public', cls: '' },
-            { text: '$ 欢迎，玩家。世界不会等你。_', cls: '' },
-        ];
-        const typedEl = document.getElementById('typed');
-        let li = 0, ci = 0;
-        function typeLoop() {
-            if (li >= lines.length) {
-                setTimeout(() => { typedEl.innerHTML = ''; li = 0; ci = 0; typeLoop(); }, 2600);
-                return;
-            }
-            const current = lines[li];
-            if (ci === 0) {
-                typedEl.innerHTML += (li > 0 ? '\n' : '') + `<span class="${current.cls}">`;
-            }
-            if (ci < current.text.length) {
-                typedEl.querySelector('span:last-child').textContent += current.text[ci];
-                ci++;
-                setTimeout(typeLoop, 26);
-            } else {
-                li++; ci = 0;
-                setTimeout(typeLoop, 380);
-            }
-        }
-        typeLoop();
-
-        // =====================
-        // image viewer
-        // =====================
-
-        function openImageViewer(src) {
-            const viewer = document.getElementById("imageViewer");
-            const img = document.getElementById("viewerImage");
-
-            img.src = src;
-            viewer.classList.add("open");
-            document.body.style.overflow = "hidden";
-        }
-
-        function closeImageViewer() {
-            const viewer = document.getElementById("imageViewer");
-            viewer.classList.remove("open");
-            document.body.style.overflow = "";
-        }
-
-        document.addEventListener("keydown", function (e) {
-            if (e.key === "Escape") {
-                closeImageViewer();
-            }
-        });
-    </script>
-    <div class="modal-overlay" id="sponsorModal" onclick="if(event.target===this) closeSponsorModal()">
-        <div class="modal-box">
-            <div class="term-head">
-                <div class="dotc"></div>
-                <div class="dotc"></div>
-                <div class="dotc"></div>
-                <span class="mt">sponsor.sh</span>
-                <button class="modal-close" onclick="closeSponsorModal()">[x] close</button>
-            </div>
-            <div class="modal-body">
-                <h3>支持 3D3K</h3>
-                <p>你的每一分支持，都会用在服务器带宽、硬件和域名续费上。感谢你愿意为这片自由的世界出一份力。（点击放大图片）</p>
-                <div class="qr-row">
-                    <div>
-                        <div class="qr-box" onclick="openImageViewer('img/WeChat.png')"><img src="/img/WeChat.png"></div>
-                        <div class="qr-label">微信</div>
-                    </div>
-                    <div>
-                        <div class="qr-box" onclick="openImageViewer('img/AliPay.png')">
-                            <img src="/img/AliPay.png">
-                        </div>
-                        <div class="qr-label">支付宝</div>
-                    </div>
-                </div>
-            </div>
-        </div>
+    <div id="hero-status" class="copy-status">已复制服务器IP 3d3k.org 到剪贴板</div>
+  </div>
+  <div class="hero-right fade-in active" style="--i:4">
+    <div class="cube"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+    <div class="cube"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+    <div class="cube"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+    <div class="term" id="tilt">
+      <div class="term-head"><div class="dotc"></div><div class="dotc"></div><div class="dotc"></div><span>connect.sh</span></div>
+      <div class="term-body"><span id="typed"></span><span class="cursor"></span></div>
     </div>
+  </div>
+</div>
 
-    <!-- World 图片查看器 -->
-    <div class="image-viewer" id="imageViewer" onclick="closeImageViewer()">
-        <img id="viewerImage">
+<!-- ABOUT -->
+<section id="about" class="wrap">
+  <div class="tag scramble fade-in"># about</div>
+  <h2 class="fade-in" style="--i:1">这不是养老服，<br>是野蛮生长的自留地。</h2>
+  <div class="about-grid">
+    <div>
+      <p class="body-text fade-in" style="--i:2">3D3K 前身为 2b2tCN，由腐竹 Zhouyi 独立维护。这里不追求秩序井然的和平——PVP 对抗、资源争夺、拆家偷袭、结盟争霸，全都是被默认允许的玩法，腐竹基本不干涉游戏内的正常对抗。</p>
+      <p class="body-text fade-in" style="margin-top:16px;--i:3">域名 3d3k.org 由社区玩家 xuanfeng0316 赞助支持。从最初几个朋友的私服，到如今聚集了一批喜欢自由探索的玩家，服务器已经走过了自己的第一年。</p>
     </div>
+    <div class="manifest spot fade-in" style="--i:3">
+      <div class="m-head">server.manifest</div>
+      <div class="m-row"><span class="k">status</span><span class="v run">running</span></div>
+      <div class="m-row"><span class="k">ip</span><span class="v">3d3k.org</span></div>
+      <div class="m-row"><span class="k">type</span><span class="v">无规则生存</span></div>
+      <div class="m-row"><span class="k">edition</span><span class="v">Java</span></div>
+      <div class="m-row"><span class="k">launched</span><span class="v">2025-06-04</span></div>
+      <div class="m-row"><span class="k">uptime</span><span class="v"><span id="days" data-to="0">0</span> 天</span></div>
+      <div class="m-row"><span class="k">predecessor</span><span class="v">2b2tCN</span></div>
+      <div class="m-row"><span class="k">forum</span><span class="v">bbs.3d3k.org</span></div>
+    </div>
+  </div>
+</section>
 
+<!-- RULES -->
+<section id="rules" class="wrap">
+  <div class="tag scramble fade-in"># rules.diff</div>
+  <h2 class="fade-in" style="--i:1">自由不代表无法无天。</h2>
+  <p class="body-text fade-in" style="--i:2">游戏内的正常对抗随便打，但服务器本身的稳定运行，是唯一不可触碰的底线。</p>
+  <div class="diff-grid">
+    <div class="diff allow spot fade-in reveal" style="--i:3">
+      <div class="d-head">+ allowed.diff</div>
+      <div class="d-line"><b>+</b>PVP 对抗、偷袭、埋伏</div>
+      <div class="d-line"><b>+</b>抢夺资源、拆家、破坏建筑</div>
+      <div class="d-line"><b>+</b>设置陷阱，恶意整活</div>
+      <div class="d-line"><b>+</b>结盟争霸，自由社交</div>
+      <div class="d-line"><b>+</b>肝矿建筑，随性而为</div>
+      <div class="d-line"><b>+</b>利用漏洞刷物品 / dupe</div>
+      <div class="d-line"><b>+</b>外挂、透视、飞行、秒杀、自动挖矿</div>
+      <div class="d-line"><b>+</b>恶意破坏、盗号、骗装备</div>
+    </div>
+    <div class="diff deny spot fade-in reveal" style="--i:4">
+      <div class="d-head">− banned.diff</div>
+      <div class="d-line"><b>−</b>攻击服务器 / 致其崩溃</div>
+      <div class="d-line"><b>−</b>未经授权转载 / 抄袭3d3k品牌内容</div>
+      <div class="d-line"><b>−</b>冒用3d3k名义进行商业活动</div>
+    </div>
+  </div>
+  <div class="note fade-in">$ banlist --查询封禁记录已公开上线</div>
+</section>
+
+<!-- LOG -->
+<section id="log" class="wrap">
+  <div class="tag scramble fade-in"># git log --oneline</div>
+  <h2 class="fade-in" style="--i:1">服务器提交记录</h2>
+  <div class="log" id="logBox">
+    <div class="log-line" id="logLine"></div>
+    <div class="log-row fade-in"><div class="log-hash">#0001</div><div class="log-main"><div class="log-date">2025-06-04</div><h4>init: 正式开服</h4><p>3D3K 无规则服（原 2b2tCN）正式上线，地址 3d3k.org，域名由玩家 xuanfeng0316 赞助支持。</p></div></div>
+    <div class="log-row fade-in"><div class="log-hash">#0002</div><div class="log-main"><div class="log-date">运营期间</div><h4>feat: banlist 查询系统上线</h4><p>玩家可自行查询封禁记录，规则执行更加透明。</p></div></div>
+    <div class="log-row fade-in"><div class="log-hash">#0003</div><div class="log-main"><div class="log-date">运营期间</div><h4>remove: 关闭快捷传送</h4><p>下线 TPA、随机传送等功能，鼓励真实的探索与迁徙。</p></div></div>
+    <div class="log-row fade-in"><div class="log-hash">#0004</div><div class="log-main"><div class="log-date">运营期间</div><h4>perf: 服务器配置升级</h4><p>针对卡顿反馈进行硬件与配置升级，提升游玩体验。</p></div></div>
+    <div class="log-row fade-in"><div class="log-hash">#0005</div><div class="log-main"><div class="log-date">2026-06-06</div><h4>release: 一周年庆典</h4><p>从孤身一人到三五成群——3D3K 一周年庆典开启，全天开放，赠送限定纪念物品。</p></div></div>
+  </div>
+</section>
+
+<!-- SPONSOR -->
+<section id="sponsor" class="wrap">
+  <div class="tag scramble fade-in"># sponsor</div>
+  <h2 class="fade-in" style="--i:1">我们需要你的帮助。</h2>
+  <div class="sponsor-grid">
+    <div>
+      <p class="body-text fade-in" style="--i:2">服务器、域名和日常维护都需要持续的投入。3D3K 能走到今天，离不开玩家们——如果你也喜欢这片自由的世界，希望它能一直运行下去，欢迎支持我们。</p>
+      <button class="btn btn-solid magnet fade-in" style="--i:3" onclick="openSponsorModal()">$ 支持我们</button>
+      <div class="sponsor-thanks fade-in"># 特别鸣谢</div>
+      <div class="sponsor-thanks fade-in"># <b>xuanfeng0316</b>（域名赞助）</div>
+      <div class="sponsor-thanks fade-in"># <b>MinecraftCurious</b></div>
+      <div class="sponsor-thanks fade-in"># <b>zyssgzzyssgz</b></div>
+      <div class="sponsor-thanks fade-in"># <b>111</b></div>
+      <div class="sponsor-thanks fade-in"># <b>3333</b></div>
+      <div class="sponsor-thanks fade-in"># <b>knepts</b></div>
+      <div class="sponsor-thanks fade-in"># <b>Yeye</b></div>
+      <div class="sponsor-thanks fade-in"># <b>fruit0v0</b></div>
+    </div>
+    <div class="sponsor-img fade-in" style="--i:2" onclick="openImageViewer('img/World.jpg')">
+      <img src="img/World.jpg" alt="World">
+    </div>
+  </div>
+</section>
+
+<!-- JOIN -->
+<section id="join" class="wrap center">
+  <div class="tag scramble fade-in" style="justify-content:center;display:flex;"># join</div>
+  <h2 class="fade-in" style="--i:1">现在，连接进去。</h2>
+  <p class="body-text fade-in" style="margin:0 auto;--i:2">打开 Minecraft Java 版，添加服务器，剩下的故事由你自己书写。</p>
+  <div class="term join-term fade-in" style="--i:3">
+    <div class="term-head"><div class="dotc"></div><div class="dotc"></div><div class="dotc"></div><span>join.sh</span></div>
+    <div class="term-body" style="text-align:left;min-height:0">
+      <div style="color:var(--dim)"><span style="color:var(--green)">$</span> minecraft-launcher connect <span class="ok">3d3k.org</span><span class="cursor" style="margin-left:6px"></span></div>
+      <div style="margin-top:12px">
+        <button class="btn btn-solid magnet" onclick="copyIP('join-status')">$ 复制 IP</button>
+        <a class="btn btn-ghost magnet" href="https://bbs.3d3k.org" target="_blank" rel="noopener" style="margin-left:10px">论坛 ↗</a>
+      </div>
+    </div>
+  </div>
+  <div id="join-status" class="copy-status" style="text-align:center;">已复制 3d3k.org 到剪贴板</div>
+</section>
+
+<footer><a href="/copyright">Copyright (c) 2026 3D3K. All Rights Reserved.</a></footer>
+
+<div class="modal-overlay" id="sponsorModal" onclick="if(event.target===this)closeSponsorModal()">
+  <div class="modal-box">
+    <div class="term-head"><div class="dotc"></div><div class="dotc"></div><div class="dotc"></div><span class="mt">sponsor.sh</span><button class="modal-close" onclick="closeSponsorModal()">[x] close</button></div>
+    <div class="modal-body">
+      <h3>支持 3D3K</h3>
+      <p>你的每一分支持，都会用在服务器带宽、硬件和域名续费上。感谢你愿意为这片自由的世界出一份力。（点击放大图片）</p>
+      <div class="qr-row">
+        <div><div class="qr-box" onclick="openImageViewer('img/WeChat.png')"><img src="/img/WeChat.png" alt="微信"></div><div class="qr-label">微信</div></div>
+        <div><div class="qr-box" onclick="openImageViewer('img/AliPay.png')"><img src="/img/AliPay.png" alt="支付宝"></div><div class="qr-label">支付宝</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="image-viewer" id="imageViewer" onclick="closeImageViewer()"><img id="viewerImage" alt=""></div>
+
+<script>
+const $=s=>document.querySelector(s),$$=s=>document.querySelectorAll(s);
+const reduce=matchMedia('(prefers-reduced-motion:reduce)').matches;
+
+/* modal / viewer / copy */
+function openSponsorModal(){$('#sponsorModal').classList.add('open');document.body.style.overflow='hidden'}
+function closeSponsorModal(){$('#sponsorModal').classList.remove('open');document.body.style.overflow=''}
+function openImageViewer(s){$('#viewerImage').src=s;$('#imageViewer').classList.add('open');document.body.style.overflow='hidden'}
+function closeImageViewer(){$('#imageViewer').classList.remove('open');if(!$('#sponsorModal').classList.contains('open'))document.body.style.overflow=''}
+addEventListener('keydown',e=>{if(e.key==='Escape'){closeImageViewer();closeSponsorModal()}});
+function copyIP(id){
+  const done=()=>{const el=document.getElementById(id);el.classList.add('show');clearTimeout(el._t);el._t=setTimeout(()=>el.classList.remove('show'),2200)};
+  (navigator.clipboard?navigator.clipboard.writeText('3d3k.org'):Promise.reject()).then(done).catch(done);
+}
+
+/* scroll reveal + scramble + counter */
+const chars='01<>/\\[]{}#$%&*+=';
+function scramble(el){
+  const t=el.dataset.t||(el.dataset.t=el.textContent);let f=0;
+  const iv=setInterval(()=>{
+    el.textContent=[...t].map((c,i)=>i<f/2?c:chars[Math.random()*chars.length|0]).join('');
+    if(++f>t.length*2){el.textContent=t;clearInterval(iv)}
+  },30);
+}
+function count(el,to){const t0=performance.now();(function s(n){const p=Math.min((n-t0)/1600,1);el.textContent=Math.round(to*(1-Math.pow(1-p,3)));if(p<1)requestAnimationFrame(s)})(t0)}
+const days=Math.max(0,Math.floor((Date.now()-new Date('2025-06-04'))/864e5));
+const io=new IntersectionObserver(es=>es.forEach(e=>{
+  if(!e.isIntersecting)return;
+  e.target.classList.add('active');io.unobserve(e.target);
+  if(e.target.classList.contains('scramble')&&!reduce)scramble(e.target);
+  if(e.target.classList.contains('manifest'))count($('#days'),days);
+}),{threshold:.15});
+$$('.fade-in').forEach(el=>io.observe(el));
+$$('.diff').forEach(d=>d.querySelectorAll('.d-line').forEach((l,i)=>l.style.setProperty('--j',i)));
+$('#days').textContent=days;
+
+/* scroll: progress, timeline line, nav highlight */
+const secs=[...$$('section[id]')],links=[...$$('nav ul a')];
+function onScroll(){
+  const h=document.documentElement,max=h.scrollHeight-innerHeight;
+  $('#progress').style.width=(scrollY/max*100)+'%';
+  const b=$('#logBox').getBoundingClientRect(),p=Math.min(Math.max((innerHeight*.65-b.top)/b.height,0),1);
+  $('#logLine').style.height=(p*(b.height-12))+'px';
+  let cur='';secs.forEach(s=>{if(s.getBoundingClientRect().top<innerHeight*.4)cur=s.id});
+  links.forEach(a=>a.classList.toggle('on',a.getAttribute('href')==='#'+cur));
+}
+addEventListener('scroll',onScroll,{passive:true});onScroll();
+
+/* mouse: glow, spotlight, tilt, magnetic */
+const glow=$('#glow');let mx=innerWidth/2,my=innerHeight/2,gx=mx,gy=my;
+addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY});
+(function g(){gx+=(mx-gx)*.12;gy+=(my-gy)*.12;glow.style.transform=`translate(${gx}px,${gy}px)`;requestAnimationFrame(g)})();
+$$('.spot').forEach(c=>c.addEventListener('mousemove',e=>{const r=c.getBoundingClientRect();c.style.setProperty('--mx',e.clientX-r.left+'px');c.style.setProperty('--my',e.clientY-r.top+'px')}));
+const tilt=$('#tilt');
+if(tilt&&!reduce){
+  tilt.parentElement.addEventListener('mousemove',e=>{const r=tilt.getBoundingClientRect(),x=(e.clientX-r.left)/r.width-.5,y=(e.clientY-r.top)/r.height-.5;tilt.style.transform=`rotateY(${x*14}deg) rotateX(${-y*14}deg)`});
+  tilt.parentElement.addEventListener('mouseleave',()=>tilt.style.transform='');
+}
+$$('.magnet').forEach(b=>{
+  b.addEventListener('mousemove',e=>{const r=b.getBoundingClientRect();b.style.transform=`translate(${(e.clientX-r.left-r.width/2)*.2}px,${(e.clientY-r.top-r.height/2)*.3}px)`});
+  b.addEventListener('mouseleave',()=>b.style.transform='');
+});
+
+/* typewriter */
+const lines=[
+  {t:'$ minecraft-launcher connect 3d3k.org',c:'warn'},
+  {t:'> connecting to 3d3k.org ...',c:''},
+  {t:'> handshake ok',c:'ok'},
+  {t:'> 无规则协议已启用',c:'ok'},
+  {t:'> TPA: re-enabled',c:''},
+  {t:'> banlist: public',c:''},
+  {t:'$ 欢迎，玩家。世界不会等你。_',c:'ok'}];
+const typed=$('#typed');let li=0,ci=0,cur;
+(function type(){
+  if(li>=lines.length){setTimeout(()=>{typed.innerHTML='';li=0;ci=0;type()},2800);return}
+  const L=lines[li];
+  if(ci===0){cur=document.createElement('span');cur.className=L.c;typed.append((li?'\n':''),cur)}
+  if(ci<L.t.length){cur.textContent+=L.t[ci++];setTimeout(type,24)}
+  else{li++;ci=0;setTimeout(type,li===2?700:340)}
+})();
+
+/* background: interactive particle network */
+const cv=$('#bg'),cx=cv.getContext('2d');let W,H,P=[];
+function size(){W=cv.width=innerWidth;H=cv.height=innerHeight;P=Array.from({length:Math.min(90,W*H/16000|0)},()=>({x:Math.random()*W,y:Math.random()*H,vx:(Math.random()-.5)*.35,vy:(Math.random()-.5)*.35,r:Math.random()*1.5+.5}))}
+addEventListener('resize',size);size();
+(function draw(){
+  cx.clearRect(0,0,W,H);
+  for(const p of P){
+    const dx=p.x-mx,dy=p.y-my,d=Math.hypot(dx,dy);
+    if(d<140){p.x+=dx/d*1.2;p.y+=dy/d*1.2}
+    p.x+=p.vx;p.y+=p.vy;
+    if(p.x<0||p.x>W)p.vx*=-1;if(p.y<0||p.y>H)p.vy*=-1;
+    cx.fillStyle='rgba(157,255,92,.55)';cx.fillRect(p.x,p.y,p.r*2,p.r*2);
+  }
+  for(let i=0;i<P.length;i++)for(let j=i+1;j<P.length;j++){
+    const d=Math.hypot(P[i].x-P[j].x,P[i].y-P[j].y);
+    if(d<130){cx.strokeStyle=`rgba(157,255,92,${(1-d/130)*.16})`;cx.beginPath();cx.moveTo(P[i].x,P[i].y);cx.lineTo(P[j].x,P[j].y);cx.stroke()}
+  }
+  if(!reduce)requestAnimationFrame(draw);
+})();
+</script>
 </body>
-
 </html>
